@@ -43,10 +43,10 @@ async function pullSource(
   const targetPath = path.join(ROOT, source.targetDir);
   console.log(`▸ ${source.repo} → ${source.targetDir}`);
 
-  // Skip if target already exists and we're local (content may be local-only)
-  if (existsSync(targetPath) && !isCI) {
-    console.log("  Already exists — skipping (local mode).");
-    return true;
+  // Clean target directory before pulling fresh content
+  if (existsSync(targetPath)) {
+    await rm(targetPath, { recursive: true, force: true });
+    console.log("  Cleaned existing directory.");
   }
 
   if (isCI && githubToken) {
@@ -98,11 +98,9 @@ async function pullSource(
       await rm(tmpDir, { recursive: true, force: true });
       console.log("  ✓ Cloned and copied.");
       return true;
-    } catch {
-      console.log(
-        "  ⚠ Clone failed (repo may not exist yet). Skipping."
-      );
-      return true; // Non-fatal in local mode
+    } catch (err: any) {
+      console.error(`  ✗ Clone failed: ${err.message || err}`);
+      return false;
     }
   }
 }
