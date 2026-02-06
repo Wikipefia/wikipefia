@@ -1,0 +1,64 @@
+---
+title:
+  ru: "Операции с матрицами"
+  en: "Matrix Operations"
+  cz: "Operace s maticemi"
+slug: "matrix-operations"
+author: "ivan-petrov"
+keywords:
+  ru: ["матрицы", "умножение матриц", "обратная матрица"]
+  en: ["matrices", "matrix multiplication", "inverse matrix"]
+  cz: ["matice", "násobení matic", "inverzní matice"]
+created: "2024-09-15"
+updated: "2025-01-20"
+difficulty: "intermediate"
+estimatedReadTime: 8
+prerequisites: ["vectors-intro"]
+---
+
+# Matrix Operations
+
+A matrix is a rectangular array of numbers arranged in rows and columns. An m×n matrix has m rows and n columns. Matrices are the workhorses of linear algebra.
+
+## What is a Matrix?
+
+```python
+import numpy as np
+
+# A 2x3 matrix
+A = np.array([
+    [1, 2, 3],
+    [4, 5, 6]
+])
+print(f"Shape: {A.shape}")  # (2, 3)
+```
+
+## Matrix Addition
+
+Two matrices can be added if and only if they have the same dimensions. Addition is performed element-wise: (A + B)ᵢⱼ = Aᵢⱼ + Bᵢⱼ.
+
+## Matrix Multiplication
+
+Matrix multiplication is more involved. To multiply A (m×n) by B (n×p), the number of columns in A must equal the number of rows in B.
+
+> **Warning**: In general, AB ≠ BA. Matrix multiplication order matters.
+
+```python
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+
+C = A @ B  # Matrix multiplication
+print(C)
+# [[19 22]
+#  [43 50]]
+```
+
+## Transpose
+
+The transpose of a matrix A, written Aᵀ, is obtained by swapping rows and columns. Key properties: (AB)ᵀ = BᵀAᵀ and (Aᵀ)ᵀ = A.
+
+## Matrix Inverse
+
+A square matrix A has an inverse A⁻¹ if AA⁻¹ = A⁻¹A = I (identity matrix). Not all matrices are invertible — a matrix is singular if its determinant is zero.
+
+> **Tip**: For practical computation, never compute the inverse explicitly — use `np.linalg.solve(A, b)` instead of `np.linalg.inv(A) @ b`.

@@ -1,65 +1,77 @@
-import Image from "next/image";
+import { getLocale } from "next-intl/server";
+import { HomePage } from "@/components/pages/home-page";
+import type { Locale } from "@/lib/i18n/config";
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+async function getHomeData(locale: Locale) {
+  try {
+    const { getManifest } = await import("@/lib/content/loader");
+    const manifest = await getManifest();
+
+    const subjects = Object.values(manifest.subjects).map((s) => ({
+      slug: s.config.slug,
+      name: s.config.name[locale] || s.config.name.en,
+      description: s.config.description[locale] || s.config.description.en,
+      articleCount: Object.keys(s.articles).filter((k) => k !== "_front").length,
+      difficulty: s.config.metadata?.difficulty || "medium",
+      semester: s.config.metadata?.semester || 1,
+      credits: s.config.metadata?.credits || 0,
+    }));
+
+    const teachers = Object.values(manifest.teachers).map((t) => ({
+      slug: t.config.slug,
+      name: t.config.name[locale] || t.config.name.en,
+      description: t.config.description[locale] || t.config.description.en,
+      ratings: t.config.ratings,
+      subjects: t.resolvedSubjects.map((s) => s.slug),
+    }));
+
+    const systemArticles = Object.values(manifest.systemArticles)
+      .filter((a) => a.config.pinned)
+      .sort((a, b) => (a.config.order || 0) - (b.config.order || 0))
+      .map((a) => ({
+        slug: a.config.slug,
+        name: a.config.name[locale] || a.config.name.en,
+        description: a.config.description
+          ? a.config.description[locale] || a.config.description.en
+          : "",
+        route: a.config.route,
+      }));
+
+    return { subjects, teachers, systemArticles, fromManifest: true };
+  } catch {
+    // Fallback to mock data for dev
+    const { subjects, teachers } = await import("@/lib/mock-data");
+    return {
+      subjects: subjects.map((s) => ({
+        slug: s.slug,
+        name: s.name[locale] || s.name.en,
+        description: s.description[locale] || s.description.en,
+        articleCount: s.articleCount,
+        difficulty: s.difficulty,
+        semester: s.semester,
+        credits: s.credits,
+      })),
+      teachers: teachers.map((t) => ({
+        slug: t.slug,
+        name: t.name[locale] || t.name.en,
+        description: t.description[locale] || t.description.en,
+        ratings: t.ratings,
+        subjects: t.subjects,
+      })),
+      systemArticles: [] as Array<{
+        slug: string;
+        name: string;
+        description: string;
+        route: string;
+      }>,
+      fromManifest: false,
+    };
+  }
+}
+
+export default async function Home() {
+  const locale = (await getLocale()) as Locale;
+  const data = await getHomeData(locale);
+
+  return <HomePage data={data} locale={locale} />;
 }

@@ -1,0 +1,41 @@
+{
+  "slug": "programming-fundamentals",
+  "name": {
+    "ru": "Основы программирования",
+    "en": "Programming Fundamentals",
+    "cz": "Základy programování"
+  },
+  "description": {
+    "ru": "Алгоритмы, структуры данных, основы Python и C++",
+    "en": "Algorithms, data structures, Python and C++ basics",
+    "cz": "Algoritmy, datové struktury, základy Pythonu a C++"
+  },
+  "teachers": ["maria-novakova"],
+  "keywords": {
+    "ru": ["программирование", "python", "алгоритмы", "структуры данных"],
+    "en": ["programming", "python", "algorithms", "data structures"],
+    "cz": ["programování", "python", "algoritmy", "datové struktury"]
+  },
+  "categories": [
+    {
+      "slug": "getting-started",
+      "name": { "ru": "Начало работы", "en": "Getting Started", "cz": "Začínáme" },
+      "articles": ["python-basics"]
+    },
+    {
+      "slug": "data-structures",
+      "name": { "ru": "Структуры данных", "en": "Data Structures", "cz": "Datové struktury" },
+      "articles": ["sorting-algorithms"]
+    }
+  ],
+  "metadata": {
+    "semester": 1,
+    "credits": 5,
+    "difficulty": "easy",
+    "department": {
+      "ru": "Кафедра информатики",
+      "en": "Department of Computer Science",
+      "cz": "Katedra informatiky"
+    }
+  }
+}

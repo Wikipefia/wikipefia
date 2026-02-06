@@ -1,0 +1,66 @@
+{
+  "common": {
+    "search": "Search",
+    "home": "Home",
+    "subjects": "Subjects",
+    "teachers": "Teachers",
+    "articles": "Articles",
+    "close": "Close",
+    "backTo": "Back to {name}",
+    "readTime": "{minutes} min read",
+    "noResults": "No results found",
+    "showingFallback": "This article is not available in {language}. Showing {fallback} version.",
+    "endOfArticle": "End of article",
+    "tableOfContents": "Table of Contents",
+    "prerequisites": "Prerequisites",
+    "difficulty": "Difficulty",
+    "semester": "Semester",
+    "credits": "Credits",
+    "department": "Department",
+    "updated": "Updated",
+    "reviews": "Reviews",
+    "rating": "Rating",
+    "contact": "Contact",
+    "email": "Email",
+    "office": "Office",
+    "website": "Website",
+    "searchPlaceholder": "Search subjects, teachers, articles...",
+    "awaitingInput": "Type to search",
+    "results": "results",
+    "viewProfile": "View profile",
+    "outOf": "out of"
+  },
+  "home": {
+    "title": "Wikipefia",
+    "subtitle": "Educational portal for university students",
+    "featuredSubjects": "Subjects",
+    "featuredTeachers": "Teachers",
+    "systemArticles": "Featured Articles",
+    "stats": {
+      "subjects": "Subjects",
+      "articles": "Articles",
+      "teachers": "Teachers",
+      "languages": "Languages"
+    }
+  },
+  "entity": {
+    "subject": "Subject",
+    "teacher": "Teacher",
+    "systemArticle": "Article",
+    "subjectArticle": "Subject Article",
+    "teacherArticle": "Teacher Article",
+    "categories": "Categories",
+    "faculty": "Faculty",
+    "subjectsTaught": "Subjects Taught",
+    "studentReviews": "Student Reviews",
+    "showing": "Showing {count} of {total}"
+  },
+  "difficulty": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+  }
+}

@@ -1,0 +1,62 @@
+---
+title:
+  ru: "Алгоритмы сортировки"
+  en: "Sorting Algorithms"
+  cz: "Třídící algoritmy"
+slug: "sorting-algorithms"
+author: "maria-novakova"
+keywords:
+  ru: ["сортировка", "алгоритмы", "quicksort"]
+  en: ["sorting", "algorithms", "quicksort"]
+  cz: ["třídění", "algoritmy", "quicksort"]
+created: "2024-10-01"
+updated: "2025-01-25"
+difficulty: "intermediate"
+estimatedReadTime: 12
+prerequisites: ["python-basics"]
+---
+
+# Sorting Algorithms
+
+Sorting is one of the most fundamental problems in computer science. Understanding sorting algorithms teaches you about algorithmic thinking, time complexity, and the trade-offs between different approaches.
+
+## Bubble Sort
+
+The simplest sorting algorithm. Repeatedly steps through the list, compares adjacent elements, and swaps them if they're in the wrong order.
+
+```python
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    return arr
+```
+
+**Time complexity**: O(n²) — not suitable for large datasets.
+
+## Quicksort
+
+A divide-and-conquer algorithm that picks a pivot element and partitions the array around it.
+
+```python
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
+```
+
+**Average time complexity**: O(n log n) — much better for large datasets.
+
+## Comparison
+
+| Algorithm  | Best Case  | Average    | Worst Case | Space    |
+|-----------|------------|------------|------------|----------|
+| Bubble    | O(n)       | O(n²)     | O(n²)     | O(1)     |
+| Quicksort | O(n log n) | O(n log n)| O(n²)     | O(log n) |
+| Mergesort | O(n log n) | O(n log n)| O(n log n) | O(n)    |

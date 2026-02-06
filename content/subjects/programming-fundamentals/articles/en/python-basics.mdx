@@ -1,0 +1,73 @@
+---
+title:
+  ru: "Основы Python"
+  en: "Python Basics"
+  cz: "Základy Pythonu"
+slug: "python-basics"
+author: "maria-novakova"
+keywords:
+  ru: ["python", "переменные", "типы данных"]
+  en: ["python", "variables", "data types"]
+  cz: ["python", "proměnné", "datové typy"]
+created: "2024-09-05"
+updated: "2025-02-01"
+difficulty: "beginner"
+estimatedReadTime: 7
+---
+
+# Python Basics
+
+Python is one of the most popular programming languages in the world. Its clean syntax reads almost like English, making it the ideal first language.
+
+## Why Python?
+
+Python powers everything from web development (Django, Flask) to data science (NumPy, Pandas) to AI (TensorFlow, PyTorch).
+
+## Variables & Types
+
+Python is dynamically typed — you don't need to declare variable types explicitly.
+
+```python
+name = "Alice"         # str
+age = 21               # int
+gpa = 3.85             # float
+is_enrolled = True     # bool
+
+print(f"{name} is {age} years old")
+```
+
+## Control Flow
+
+Python uses indentation to define code blocks:
+
+```python
+score = 85
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+else:
+    grade = "C"
+
+for i in range(5):
+    print(f"Step {i}")
+
+squares = [x**2 for x in range(10)]
+```
+
+## Functions
+
+Functions are defined with the `def` keyword:
+
+```python
+def greet(name, greeting="Hello"):
+    """Return a greeting string."""
+    return f"{greeting}, {name}!"
+
+print(greet("Alice"))
+print(greet("Bob", "Hey"))
+```
+
+## Next Steps
+
+From here, explore data structures, file I/O, error handling, and object-oriented programming.

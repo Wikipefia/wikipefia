@@ -1,0 +1,95 @@
+---
+title:
+  ru: "Введение в векторы"
+  en: "Introduction to Vectors"
+  cz: "Úvod do vektorů"
+slug: "vectors-intro"
+author: "ivan-petrov"
+keywords:
+  ru: ["вектора", "операции с векторами", "скалярное произведение"]
+  en: ["vectors", "vector operations", "dot product"]
+  cz: ["vektory", "operace s vektory", "skalární součin"]
+created: "2024-09-01"
+updated: "2025-01-15"
+difficulty: "beginner"
+estimatedReadTime: 5
+---
+
+# Introduction to Vectors
+
+A vector is a mathematical object that has both **magnitude** (length) and **direction**. Unlike scalars, which are described by a single number, vectors carry information about where they point and how far they extend.
+
+## What is a Vector?
+
+A vector in ℝⁿ is an ordered n-tuple of real numbers (v₁, v₂, ..., vₙ). Geometrically, it represents a directed line segment from the origin to the point (v₁, v₂, ..., vₙ) in n-dimensional space.
+
+In two dimensions, a vector can be visualized as an arrow on a flat plane. The arrow's length represents the magnitude, and its orientation represents the direction.
+
+## Vector Notation
+
+Vectors are typically denoted with bold letters (**v**) or with an arrow above the letter (v⃗). Components are written in parentheses or brackets:
+
+```python
+import numpy as np
+
+# A 2D vector
+v = np.array([3, 4])
+
+# A 3D vector
+w = np.array([1, -2, 5])
+
+# Magnitude (length)
+magnitude = np.linalg.norm(v)  # = 5.0
+print(f"|v| = {magnitude}")
+```
+
+## Basic Operations
+
+### Addition & Subtraction
+
+Vector addition is performed component-wise. Given vectors **u** = (u₁, u₂) and **v** = (v₁, v₂), their sum is **u** + **v** = (u₁ + v₁, u₂ + v₂).
+
+Properties of vector addition:
+
+- **Commutative**: u + v = v + u
+- **Associative**: (u + v) + w = u + (v + w)
+- **Identity**: v + 0 = v
+- **Inverse**: v + (-v) = 0
+
+### Scalar Multiplication
+
+Multiplying a vector by a scalar c scales every component: c · **v** = (cv₁, cv₂). When c > 1, the vector stretches. When 0 < c < 1, it shrinks. When c < 0, the vector reverses direction.
+
+## The Dot Product
+
+The dot product of two vectors **u** · **v** = u₁v₁ + u₂v₂ + ... + uₙvₙ returns a scalar. It measures how much two vectors point in the same direction.
+
+```python
+u = np.array([1, 2, 3])
+v = np.array([4, -5, 6])
+
+dot = np.dot(u, v)  # 1*4 + 2*(-5) + 3*6 = 12
+print(f"u · v = {dot}")
+
+# Angle between vectors
+cos_theta = dot / (np.linalg.norm(u) * np.linalg.norm(v))
+theta = np.arccos(cos_theta)
+print(f"Angle: {np.degrees(theta):.1f}°")
+```
+
+> **Geometric Interpretation**: u · v = |u| · |v| · cos(θ), where θ is the angle between the vectors.
+
+## The Cross Product
+
+The cross product **u** × **v** is defined only in three dimensions and produces a vector perpendicular to both **u** and **v**. Its magnitude equals the area of the parallelogram formed by **u** and **v**.
+
+> **Warning**: The cross product is anti-commutative: u × v = -(v × u). The order of operands matters.
+
+## Applications
+
+Vectors are ubiquitous in applied mathematics and engineering:
+
+1. **Physics**: Force decomposition, projectile motion, electromagnetic fields
+2. **Computer Graphics**: 3D rendering, ray tracing, collision detection
+3. **Machine Learning**: Feature spaces, gradient descent, embeddings
+4. **Robotics**: Kinematics, path planning, sensor fusion

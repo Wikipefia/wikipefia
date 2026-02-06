@@ -1,0 +1,25 @@
+{
+  "articles": [
+    {
+      "slug": "semester-1-overview",
+      "route": "/semester-1-overview",
+      "name": {
+        "ru": "Обзор первого семестра",
+        "en": "First Semester Overview",
+        "cz": "Přehled prvního semestru"
+      },
+      "description": {
+        "ru": "Полное руководство по первому семестру: предметы, расписание и советы",
+        "en": "Complete guide to your first semester: subjects, schedule, and tips",
+        "cz": "Kompletní průvodce prvním semestrem: předměty, rozvrh a tipy"
+      },
+      "keywords": {
+        "ru": ["первый семестр", "обзор", "предметы"],
+        "en": ["first semester", "overview", "subjects"],
+        "cz": ["první semestr", "přehled", "předměty"]
+      },
+      "pinned": true,
+      "order": 1
+    }
+  ]
+}

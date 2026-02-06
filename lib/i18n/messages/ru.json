@@ -1,0 +1,66 @@
+{
+  "common": {
+    "search": "Поиск",
+    "home": "Главная",
+    "subjects": "Предметы",
+    "teachers": "Преподаватели",
+    "articles": "Статьи",
+    "close": "Закрыть",
+    "backTo": "Назад к {name}",
+    "readTime": "{minutes} мин чтения",
+    "noResults": "Ничего не найдено",
+    "showingFallback": "Эта статья недоступна на {language}. Показана версия на {fallback}.",
+    "endOfArticle": "Конец статьи",
+    "tableOfContents": "Содержание",
+    "prerequisites": "Необходимые знания",
+    "difficulty": "Сложность",
+    "semester": "Семестр",
+    "credits": "Кредиты",
+    "department": "Кафедра",
+    "updated": "Обновлено",
+    "reviews": "Отзывы",
+    "rating": "Рейтинг",
+    "contact": "Контакты",
+    "email": "Эл. почта",
+    "office": "Кабинет",
+    "website": "Веб-сайт",
+    "searchPlaceholder": "Поиск предметов, преподавателей, статей...",
+    "awaitingInput": "Введите запрос для поиска",
+    "results": "результатов",
+    "viewProfile": "Перейти к профилю",
+    "outOf": "из"
+  },
+  "home": {
+    "title": "Wikipefia",
+    "subtitle": "Образовательный портал для студентов",
+    "featuredSubjects": "Предметы",
+    "featuredTeachers": "Преподаватели",
+    "systemArticles": "Важные статьи",
+    "stats": {
+      "subjects": "Предметов",
+      "articles": "Статей",
+      "teachers": "Преподавателей",
+      "languages": "Языков"
+    }
+  },
+  "entity": {
+    "subject": "Предмет",
+    "teacher": "Преподаватель",
+    "systemArticle": "Статья",
+    "subjectArticle": "Статья предмета",
+    "teacherArticle": "Статья преподавателя",
+    "categories": "Категории",
+    "faculty": "Преподаватели",
+    "subjectsTaught": "Преподаваемые предметы",
+    "studentReviews": "Отзывы студентов",
+    "showing": "Показано {count} из {total}"
+  },
+  "difficulty": {
+    "easy": "Легко",
+    "medium": "Средне",
+    "hard": "Сложно",
+    "beginner": "Начальный",
+    "intermediate": "Средний",
+    "advanced": "Продвинутый"
+  }
+}

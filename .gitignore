@@ -36,6 +36,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# content build output (regenerated)
+/.content-build/
+
+# search indexes in public (copied at build)
+/public/search/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

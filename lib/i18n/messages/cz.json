@@ -1,0 +1,66 @@
+{
+  "common": {
+    "search": "Hledat",
+    "home": "Domů",
+    "subjects": "Předměty",
+    "teachers": "Učitelé",
+    "articles": "Články",
+    "close": "Zavřít",
+    "backTo": "Zpět na {name}",
+    "readTime": "{minutes} min čtení",
+    "noResults": "Nebyly nalezeny žádné výsledky",
+    "showingFallback": "Tento článek není dostupný v {language}. Zobrazena verze v {fallback}.",
+    "endOfArticle": "Konec článku",
+    "tableOfContents": "Obsah",
+    "prerequisites": "Předpoklady",
+    "difficulty": "Obtížnost",
+    "semester": "Semestr",
+    "credits": "Kredity",
+    "department": "Katedra",
+    "updated": "Aktualizováno",
+    "reviews": "Recenze",
+    "rating": "Hodnocení",
+    "contact": "Kontakt",
+    "email": "E-mail",
+    "office": "Kancelář",
+    "website": "Webové stránky",
+    "searchPlaceholder": "Hledat předměty, učitele, články...",
+    "awaitingInput": "Zadejte hledaný výraz",
+    "results": "výsledků",
+    "viewProfile": "Zobrazit profil",
+    "outOf": "z"
+  },
+  "home": {
+    "title": "Wikipefia",
+    "subtitle": "Vzdělávací portál pro studenty",
+    "featuredSubjects": "Předměty",
+    "featuredTeachers": "Učitelé",
+    "systemArticles": "Důležité články",
+    "stats": {
+      "subjects": "Předmětů",
+      "articles": "Článků",
+      "teachers": "Učitelů",
+      "languages": "Jazyků"
+    }
+  },
+  "entity": {
+    "subject": "Předmět",
+    "teacher": "Učitel",
+    "systemArticle": "Článek",
+    "subjectArticle": "Článek předmětu",
+    "teacherArticle": "Článek učitele",
+    "categories": "Kategorie",
+    "faculty": "Učitelé",
+    "subjectsTaught": "Vyučované předměty",
+    "studentReviews": "Studentské recenze",
+    "showing": "Zobrazeno {count} z {total}"
+  },
+  "difficulty": {
+    "easy": "Snadné",
+    "medium": "Střední",
+    "hard": "Těžké",
+    "beginner": "Začátečník",
+    "intermediate": "Střední",
+    "advanced": "Pokročilý"
+  }
+}
