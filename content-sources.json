@@ -5,6 +5,12 @@
       "branch": "main",
       "path": ".",
       "targetDir": "content/subjects/discrete-mathematics"
+    },
+    {
+      "repo": "wikipefia/subject-economic",
+      "branch": "main",
+      "path": ".",
+      "targetDir": "content/subjects/economics"
     }
   ],
   "teachers": {
