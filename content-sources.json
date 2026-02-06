@@ -1,36 +1,12 @@
 {
   "subjects": [
     {
-      "repo": "org/subject-linear-algebra",
+      "repo": "wikipefia/subject-repo-template",
       "branch": "main",
       "path": ".",
       "targetDir": "content/subjects/linear-algebra"
-    },
-    {
-      "repo": "org/subject-programming-fundamentals",
-      "branch": "main",
-      "path": ".",
-      "targetDir": "content/subjects/programming-fundamentals"
     }
   ],
-  "teachers": [
-    {
-      "repo": "org/teacher-ivan-petrov",
-      "branch": "main",
-      "path": ".",
-      "targetDir": "content/teachers/ivan-petrov"
-    },
-    {
-      "repo": "org/teacher-maria-novakova",
-      "branch": "main",
-      "path": ".",
-      "targetDir": "content/teachers/maria-novakova"
-    }
-  ],
-  "system": {
-    "repo": "org/system-articles",
-    "branch": "main",
-    "path": ".",
-    "targetDir": "content/system"
-  }
+  "teachers": [],
+  "system": {}
 }
