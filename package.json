@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm content:pull && pnpm content:compile && next build",
-    "build:local": "pnpm content:compile && next build",
+    "build": "pnpm build:compiler && pnpm content:pull && pnpm content:compile && next build",
+    "build:local": "pnpm build:compiler && pnpm content:compile && next build",
+    "build:compiler": "pnpm --filter @wikipefia/mdx-compiler build",
     "content:pull": "node --experimental-strip-types scripts/pull-content.ts",
     "content:compile": "node --experimental-strip-types scripts/build-content.ts",
     "content:validate": "node --experimental-strip-types scripts/validate-routes.ts",
