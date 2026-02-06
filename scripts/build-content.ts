@@ -11,142 +11,32 @@ import { readFile, writeFile, mkdir, readdir, rm } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import { createHash } from "crypto";
-import { compile } from "@mdx-js/mdx";
 import matter from "gray-matter";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeKatex from "rehype-katex";
-import { visit } from "unist-util-visit";
-import { toString } from "hast-util-to-string";
-
-// Schemas (use relative paths for tsx compatibility)
 import { z } from "zod/v4";
+
+// ── @wikipefia/mdx-compiler — single source of truth ──
+import {
+  compileMDX,
+  MDXCompileError,
+  SubjectConfig,
+  TeacherConfig,
+  SystemArticleEntry,
+  SystemConfig,
+  ArticleFrontmatter,
+  LOCALES,
+  type Locale,
+  type TocEntry,
+} from "@wikipefia/mdx-compiler";
 
 // ── Constants ──────────────────────────────────────────
 
 const ROOT = process.cwd();
 const CONTENT_DIR = path.join(ROOT, "content");
 const BUILD_DIR = path.join(ROOT, ".content-build");
-const LOCALES = ["ru", "en", "cz"] as const;
-type Locale = (typeof LOCALES)[number];
 
 const RESERVED_SLUGS = ["api", "_next", "not-found", "search"];
 
-// ── Zod Schemas (inline to avoid path alias issues in tsx) ────
-
-const LocalizedString = z.object({
-  ru: z.string(),
-  en: z.string(),
-  cz: z.string(),
-});
-
-const LocalizedKeywords = z.object({
-  ru: z.array(z.string()),
-  en: z.array(z.string()),
-  cz: z.array(z.string()),
-});
-
-const SubjectConfig = z.object({
-  slug: z.string().regex(/^[a-z0-9-]+$/),
-  name: LocalizedString,
-  description: LocalizedString,
-  teachers: z.array(z.string()),
-  keywords: LocalizedKeywords,
-  categories: z.array(
-    z.object({
-      slug: z.string(),
-      name: LocalizedString,
-      articles: z.array(z.string()),
-    })
-  ),
-  metadata: z
-    .object({
-      semester: z.number().optional(),
-      credits: z.number().optional(),
-      difficulty: z.enum(["easy", "medium", "hard"]).optional(),
-      department: LocalizedString.optional(),
-    })
-    .optional(),
-});
-
-const TeacherConfig = z.object({
-  slug: z.string().regex(/^[a-z0-9-]+$/),
-  name: LocalizedString,
-  description: LocalizedString,
-  photo: z.string().optional(),
-  subjects: z.array(z.string()),
-  ratings: z.object({
-    overall: z.number().min(0).max(5),
-    clarity: z.number().min(0).max(5),
-    difficulty: z.number().min(0).max(5),
-    usefulness: z.number().min(0).max(5),
-    count: z.number().int().min(0),
-  }),
-  keywords: LocalizedKeywords,
-  contacts: z
-    .object({
-      email: z.string().email().optional(),
-      office: LocalizedString.optional(),
-      website: z.string().url().optional(),
-    })
-    .optional(),
-  reviews: z
-    .array(
-      z.object({
-        text: LocalizedString,
-        rating: z.number().min(1).max(5),
-        date: z.string(),
-        anonymous: z.boolean().default(true),
-      })
-    )
-    .optional(),
-  sections: z
-    .array(
-      z.object({
-        slug: z.string(),
-        name: LocalizedString,
-        articles: z.array(z.string()),
-      })
-    )
-    .optional(),
-});
-
-const SystemArticleEntry = z.object({
-  slug: z.string().regex(/^[a-z0-9-]+$/),
-  route: z.string().startsWith("/"),
-  name: LocalizedString,
-  description: LocalizedString.optional(),
-  keywords: LocalizedKeywords,
-  pinned: z.boolean().default(false),
-  order: z.number().optional(),
-});
-
-const SystemConfig = z.object({
-  articles: z.array(SystemArticleEntry),
-});
-
-const ArticleFrontmatter = z.object({
-  title: LocalizedString,
-  slug: z.string().regex(/^[a-z0-9_-]+$/),
-  author: z.string().optional(),
-  keywords: LocalizedKeywords,
-  created: z.string(),
-  updated: z.string().optional(),
-  difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
-  estimatedReadTime: z.number().optional(),
-  prerequisites: z.array(z.string()).optional(),
-  tutors: z.array(z.string()).optional(),
-});
-
 // ── Types ──────────────────────────────────────────────
-
-interface TocEntry {
-  id: string;
-  text: string;
-  depth: number;
-}
 
 interface SearchEntry {
   id: string;
@@ -383,75 +273,27 @@ function validateRoutes(
 
 async function compileMDXFile(
   source: string,
-  filePath: string // for error reporting
+  filePath: string
 ): Promise<{ compiled: string; toc: TocEntry[] }> {
-  const tocStore: TocEntry[] = [];
-
-  // Custom rehype plugin to extract ToC
-  function rehypeExtractToc() {
-    return (tree: any) => {
-      visit(tree, "element", (node: any) => {
-        if (/^h[1-6]$/.test(node.tagName)) {
-          tocStore.push({
-            id: node.properties?.id || "",
-            text: toString(node),
-            depth: parseInt(node.tagName[1]),
-          });
-        }
-      });
-    };
-  }
-
   try {
-    const vfile = await compile(source, {
-      outputFormat: "function-body",
-      development: false,
-      remarkPlugins: [remarkGfm, remarkMath],
-      rehypePlugins: [
-        rehypeSlug,
-        [rehypeAutolinkHeadings, { behavior: "wrap" }],
-        rehypeKatex,
-        rehypeExtractToc,
-      ],
-    });
+    const result = await compileMDX(source, { filePath, validateComponents: true });
 
-    return { compiled: String(vfile), toc: tocStore };
-  } catch (err: any) {
-    const line = err.line ?? "?";
-    const column = err.column ?? "?";
-    const reason = err.reason ?? err.message ?? String(err);
-
-    console.error("");
-    console.error("  " + "═".repeat(56));
-    console.error("  MDX COMPILATION ERROR");
-    console.error("  " + "═".repeat(56));
-    console.error(`  File:   ${filePath}`);
-    console.error(`  Line:   ${line}, Column: ${column}`);
-    console.error(`  Reason: ${reason}`);
-    if (err.ruleId) {
-      console.error(`  Rule:   ${err.ruleId} (${err.source || "unknown"})`);
-    }
-    if (err.url) {
-      console.error(`  Docs:   ${err.url}`);
-    }
-
-    // Show the offending line(s) for context
-    if (typeof line === "number" && line > 0) {
-      const lines = source.split("\n");
-      const start = Math.max(0, line - 4);
-      const end = Math.min(lines.length, line + 2);
-      console.error("");
-      console.error("  Source context:");
-      for (let i = start; i < end; i++) {
-        const lineNum = i + 1;
-        const marker = lineNum === line ? " >>>" : "    ";
-        console.error(`  ${marker} ${String(lineNum).padStart(4)} | ${lines[i]}`);
+    // Log component warnings (non-fatal)
+    for (const d of result.diagnostics) {
+      if (d.severity === "warning") {
+        console.warn(`  ⚠ ${filePath}: ${d.message}${d.line ? ` (line ${d.line})` : ""}`);
+      } else if (d.severity === "error") {
+        logError(`${filePath}: ${d.message}${d.line ? ` (line ${d.line})` : ""}`);
       }
     }
 
-    console.error("  " + "═".repeat(56));
-    console.error("");
-
+    return { compiled: result.compiled, toc: result.toc };
+  } catch (err) {
+    if (err instanceof MDXCompileError) {
+      console.error("");
+      console.error("  " + err.format(source).split("\n").join("\n  "));
+      console.error("");
+    }
     throw err;
   }
 }
