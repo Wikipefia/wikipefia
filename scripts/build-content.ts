@@ -17,6 +17,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeKatex from "rehype-katex";
 import { visit } from "unist-util-visit";
 import { toString } from "hast-util-to-string";
 
@@ -381,7 +382,8 @@ function validateRoutes(
 // ── Step 3: Compile MDX ────────────────────────────────
 
 async function compileMDXFile(
-  source: string
+  source: string,
+  filePath: string // for error reporting
 ): Promise<{ compiled: string; toc: TocEntry[] }> {
   const tocStore: TocEntry[] = [];
 
@@ -400,18 +402,58 @@ async function compileMDXFile(
     };
   }
 
-  const vfile = await compile(source, {
-    outputFormat: "function-body",
-    development: false,
-    remarkPlugins: [remarkGfm, remarkMath],
-    rehypePlugins: [
-      rehypeSlug,
-      [rehypeAutolinkHeadings, { behavior: "wrap" }],
-      rehypeExtractToc,
-    ],
-  });
+  try {
+    const vfile = await compile(source, {
+      outputFormat: "function-body",
+      development: false,
+      remarkPlugins: [remarkGfm, remarkMath],
+      rehypePlugins: [
+        rehypeSlug,
+        [rehypeAutolinkHeadings, { behavior: "wrap" }],
+        rehypeKatex,
+        rehypeExtractToc,
+      ],
+    });
 
-  return { compiled: String(vfile), toc: tocStore };
+    return { compiled: String(vfile), toc: tocStore };
+  } catch (err: any) {
+    const line = err.line ?? "?";
+    const column = err.column ?? "?";
+    const reason = err.reason ?? err.message ?? String(err);
+
+    console.error("");
+    console.error("  " + "═".repeat(56));
+    console.error("  MDX COMPILATION ERROR");
+    console.error("  " + "═".repeat(56));
+    console.error(`  File:   ${filePath}`);
+    console.error(`  Line:   ${line}, Column: ${column}`);
+    console.error(`  Reason: ${reason}`);
+    if (err.ruleId) {
+      console.error(`  Rule:   ${err.ruleId} (${err.source || "unknown"})`);
+    }
+    if (err.url) {
+      console.error(`  Docs:   ${err.url}`);
+    }
+
+    // Show the offending line(s) for context
+    if (typeof line === "number" && line > 0) {
+      const lines = source.split("\n");
+      const start = Math.max(0, line - 4);
+      const end = Math.min(lines.length, line + 2);
+      console.error("");
+      console.error("  Source context:");
+      for (let i = start; i < end; i++) {
+        const lineNum = i + 1;
+        const marker = lineNum === line ? " >>>" : "    ";
+        console.error(`  ${marker} ${String(lineNum).padStart(4)} | ${lines[i]}`);
+      }
+    }
+
+    console.error("  " + "═".repeat(56));
+    console.error("");
+
+    throw err;
+  }
 }
 
 async function processArticles(
@@ -472,7 +514,9 @@ async function processArticles(
       articles[articleSlug].locales.push(locale);
 
       // Compile MDX
-      const { compiled, toc } = await compileMDXFile(content);
+      const relPath = `${entityType}/${entitySlug}/articles/${locale}/${file}`;
+      log(`Compiling ${relPath}...`);
+      const { compiled, toc } = await compileMDXFile(content, filePath);
 
       // Write compiled output
       const compiledOutPath = path.join(
@@ -538,7 +582,9 @@ async function processSystemArticles(
 
       results[articleConfig.slug].locales.push(locale);
 
-      const { compiled, toc } = await compileMDXFile(content);
+      const relPath = `system/articles/${locale}/${articleConfig.slug}.mdx`;
+      log(`Compiling ${relPath}...`);
+      const { compiled, toc } = await compileMDXFile(content, filePath);
 
       const compiledOutPath = path.join(
         BUILD_DIR,
@@ -815,12 +861,20 @@ async function main() {
   // Step 1: Load configs
   logSection("Loading content configs...");
   const subjects = await loadSubjects();
-  log(`Loaded ${subjects.length} subject(s).`);
+  log(`Loaded ${subjects.length} subject(s): ${subjects.map((s) => s.config.slug).join(", ") || "(none)"}`);
+  for (const s of subjects) {
+    const catArticles = s.config.categories.flatMap((c) => c.articles);
+    log(`  ↳ ${s.config.slug}: ${catArticles.length} article(s) in ${s.config.categories.length} category(ies) [dir: ${s.dir}]`);
+  }
   const teachers = await loadTeachers();
-  log(`Loaded ${teachers.length} teacher(s).`);
+  log(`Loaded ${teachers.length} teacher(s): ${teachers.map((t) => t.config.slug).join(", ") || "(none)"}`);
+  for (const t of teachers) {
+    const secArticles = (t.config.sections || []).flatMap((s) => s.articles);
+    log(`  ↳ ${t.config.slug}: ${secArticles.length} article(s) in ${(t.config.sections || []).length} section(s) [dir: ${t.dir}]`);
+  }
   const system = await loadSystem();
   if (system) {
-    log(`Loaded ${system.config.articles.length} system article(s).`);
+    log(`Loaded ${system.config.articles.length} system article(s): ${system.config.articles.map((a) => a.slug).join(", ")}`);
   }
 
   // Step 2: Validate routes
@@ -926,6 +980,11 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error("\n✗ Build failed:", err);
+  // If this is an MDX compilation error, the detailed box was already printed
+  if (err.reason && err.line) {
+    console.error(`✗ Build failed due to MDX compilation error (see above).`);
+  } else {
+    console.error("\n✗ Build failed:", err);
+  }
   process.exit(1);
 });

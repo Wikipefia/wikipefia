@@ -3,6 +3,7 @@ import { IBM_Plex_Mono, IBM_Plex_Serif } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { SearchProvider } from "@/components/search/search-provider";
+import "katex/dist/katex.min.css";
 import "./globals.css";
 
 const plexMono = IBM_Plex_Mono({

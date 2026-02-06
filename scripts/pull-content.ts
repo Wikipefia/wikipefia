@@ -5,6 +5,11 @@
  * Reads content-sources.json and clones/downloads content repos
  * into the content/ directory.
  *
+ * Content source types:
+ *   - subjects: Array of individual repos, one per subject
+ *   - teachers: Single unified repo containing all teacher directories
+ *   - system:   Single repo containing system articles
+ *
  * In CI (GITHUB_ACTIONS=true): uses GitHub API tarball download.
  * Locally: uses git clone --depth 1.
  */
@@ -26,8 +31,80 @@ interface ContentSource {
 
 interface ContentSources {
   subjects: ContentSource[];
-  teachers: ContentSource[];
+  teachers: ContentSource;  // Single unified repo
   system: ContentSource;
+}
+
+async function pullSource(
+  source: ContentSource,
+  isCI: boolean,
+  githubToken: string | undefined
+): Promise<boolean> {
+  const targetPath = path.join(ROOT, source.targetDir);
+  console.log(`▸ ${source.repo} → ${source.targetDir}`);
+
+  // Skip if target already exists and we're local (content may be local-only)
+  if (existsSync(targetPath) && !isCI) {
+    console.log("  Already exists — skipping (local mode).");
+    return true;
+  }
+
+  if (isCI && githubToken) {
+    // Download tarball using GitHub API
+    try {
+      const tmpDir = path.join(
+        os.tmpdir(),
+        `wikipefia-pull-${Date.now()}`
+      );
+      await mkdir(tmpDir, { recursive: true });
+
+      const tarballUrl = `https://api.github.com/repos/${source.repo}/tarball/${source.branch}`;
+      execSync(
+        `curl -sL -H "Authorization: token ${githubToken}" "${tarballUrl}" | tar xz -C "${tmpDir}" --strip-components=1`,
+        { stdio: "pipe" }
+      );
+
+      // Ensure target dir exists and copy
+      await mkdir(targetPath, { recursive: true });
+      const sourcePath =
+        source.path === "." ? tmpDir : path.join(tmpDir, source.path);
+      await cp(sourcePath, targetPath, { recursive: true });
+
+      // Cleanup
+      await rm(tmpDir, { recursive: true, force: true });
+      console.log("  ✓ Downloaded and extracted.");
+      return true;
+    } catch (err: any) {
+      console.error(`  ✗ Failed to download: ${err.message}`);
+      return false;
+    }
+  } else {
+    // Local: git clone
+    try {
+      const tmpDir = path.join(
+        os.tmpdir(),
+        `wikipefia-clone-${Date.now()}`
+      );
+      execSync(
+        `git clone --depth 1 --branch ${source.branch} https://github.com/${source.repo}.git "${tmpDir}"`,
+        { stdio: "pipe" }
+      );
+
+      await mkdir(targetPath, { recursive: true });
+      const sourcePath =
+        source.path === "." ? tmpDir : path.join(tmpDir, source.path);
+      await cp(sourcePath, targetPath, { recursive: true });
+
+      await rm(tmpDir, { recursive: true, force: true });
+      console.log("  ✓ Cloned and copied.");
+      return true;
+    } catch {
+      console.log(
+        "  ⚠ Clone failed (repo may not exist yet). Skipping."
+      );
+      return true; // Non-fatal in local mode
+    }
+  }
 }
 
 async function main() {
@@ -48,115 +125,108 @@ async function main() {
   const isCI = process.env.GITHUB_ACTIONS === "true";
   const githubToken = process.env.GITHUB_TOKEN;
 
-  const allSources: ContentSource[] = [
-    ...(sources.subjects || []),
-    ...(sources.teachers || []),
-    ...(sources.system ? [sources.system] : []),
-  ];
+  // Count total sources
+  const subjectCount = sources.subjects?.length || 0;
+  const hasTeachers = !!sources.teachers;
+  const hasSystem = !!sources.system;
+  const totalSources = subjectCount + (hasTeachers ? 1 : 0) + (hasSystem ? 1 : 0);
 
-  console.log(`Found ${allSources.length} content source(s).`);
+  console.log(`Found ${totalSources} content source(s):`);
+  console.log(`  ${subjectCount} subject repo(s)`);
+  console.log(`  ${hasTeachers ? "1 unified teachers repo" : "no teachers repo"}`);
+  console.log(`  ${hasSystem ? "1 system articles repo" : "no system articles repo"}`);
   console.log(`Mode: ${isCI ? "CI (GitHub Actions)" : "Local"}\n`);
 
-  for (const source of allSources) {
-    const targetPath = path.join(ROOT, source.targetDir);
-    console.log(`▸ ${source.repo} → ${source.targetDir}`);
+  let allOk = true;
 
-    // Skip if target already exists and we're local (content may be local-only)
-    if (existsSync(targetPath) && !isCI) {
-      console.log("  Already exists — skipping (local mode).");
-      continue;
+  // Pull subjects (individual repos)
+  if (sources.subjects) {
+    console.log("── Subject Repos ──────────────────────\n");
+    for (const source of sources.subjects) {
+      const ok = await pullSource(source, isCI, githubToken);
+      if (!ok) allOk = false;
     }
+  }
 
-    if (isCI && githubToken) {
-      // Download tarball using GitHub API
-      try {
-        const tmpDir = path.join(
-          os.tmpdir(),
-          `wikipefia-pull-${Date.now()}`
-        );
-        await mkdir(tmpDir, { recursive: true });
+  // Pull teachers (single unified repo → content/teachers/)
+  if (sources.teachers) {
+    console.log("\n── Teachers Repo (unified) ────────────\n");
+    const ok = await pullSource(sources.teachers, isCI, githubToken);
+    if (!ok) allOk = false;
+  }
 
-        const tarballUrl = `https://api.github.com/repos/${source.repo}/tarball/${source.branch}`;
-        execSync(
-          `curl -sL -H "Authorization: token ${githubToken}" "${tarballUrl}" | tar xz -C "${tmpDir}" --strip-components=1`,
-          { stdio: "pipe" }
-        );
-
-        // Ensure target dir exists and copy
-        await mkdir(targetPath, { recursive: true });
-        const sourcePath =
-          source.path === "." ? tmpDir : path.join(tmpDir, source.path);
-        await cp(sourcePath, targetPath, { recursive: true });
-
-        // Cleanup
-        await rm(tmpDir, { recursive: true, force: true });
-        console.log("  ✓ Downloaded and extracted.");
-      } catch (err: any) {
-        console.error(`  ✗ Failed to download: ${err.message}`);
-        process.exit(1);
-      }
-    } else {
-      // Local: git clone
-      try {
-        const tmpDir = path.join(
-          os.tmpdir(),
-          `wikipefia-clone-${Date.now()}`
-        );
-        execSync(
-          `git clone --depth 1 --branch ${source.branch} https://github.com/${source.repo}.git "${tmpDir}"`,
-          { stdio: "pipe" }
-        );
-
-        await mkdir(targetPath, { recursive: true });
-        const sourcePath =
-          source.path === "." ? tmpDir : path.join(tmpDir, source.path);
-        await cp(sourcePath, targetPath, { recursive: true });
-
-        await rm(tmpDir, { recursive: true, force: true });
-        console.log("  ✓ Cloned and copied.");
-      } catch {
-        console.log(
-          "  ⚠ Clone failed (repo may not exist yet). Skipping."
-        );
-      }
-    }
+  // Pull system articles
+  if (sources.system) {
+    console.log("\n── System Articles Repo ───────────────\n");
+    const ok = await pullSource(sources.system, isCI, githubToken);
+    if (!ok) allOk = false;
   }
 
   // Verify structure
   console.log("\n▸ Verifying content structure...");
-  let valid = true;
 
+  // Verify subjects
   for (const source of sources.subjects || []) {
     const dir = path.join(ROOT, source.targetDir);
     if (!existsSync(path.join(dir, "config.json"))) {
       console.error(`  ✗ Missing config.json in ${source.targetDir}`);
-      valid = false;
+      allOk = false;
     }
     if (!existsSync(path.join(dir, "articles"))) {
       console.error(`  ✗ Missing articles/ in ${source.targetDir}`);
-      valid = false;
+      allOk = false;
     }
   }
 
-  for (const source of sources.teachers || []) {
-    const dir = path.join(ROOT, source.targetDir);
-    if (!existsSync(path.join(dir, "config.json"))) {
-      console.error(`  ✗ Missing config.json in ${source.targetDir}`);
-      valid = false;
-    }
-    if (!existsSync(path.join(dir, "articles"))) {
-      console.error(`  ✗ Missing articles/ in ${source.targetDir}`);
-      valid = false;
+  // Verify teachers (unified: each subdirectory should have config.json)
+  if (sources.teachers) {
+    const teachersDir = path.join(ROOT, sources.teachers.targetDir);
+    if (existsSync(teachersDir)) {
+      const { readdirSync, statSync } = await import("fs");
+      const entries = readdirSync(teachersDir, { withFileTypes: true });
+      const teacherDirs = entries.filter((e) => {
+        if (!e.isDirectory()) return false;
+        // Skip common non-teacher dirs that may come from the repo
+        if (["node_modules", "scripts", ".github", ".git", "dist"].includes(e.name)) return false;
+        if (e.name.startsWith(".")) return false;
+        return true;
+      });
+
+      let teacherCount = 0;
+      for (const d of teacherDirs) {
+        const configPath = path.join(teachersDir, d.name, "config.json");
+        if (existsSync(configPath)) {
+          teacherCount++;
+        } else if (existsSync(path.join(teachersDir, d.name, "articles"))) {
+          // Has articles/ but no config.json — likely a teacher dir with missing config
+          console.error(`  ✗ Teacher dir ${d.name}/ has articles/ but missing config.json`);
+          allOk = false;
+        }
+      }
+      console.log(`  ✓ Found ${teacherCount} teacher(s) in unified teachers repo`);
     }
   }
 
-  if (valid) {
+  // Verify system
+  if (sources.system) {
+    const sysDir = path.join(ROOT, sources.system.targetDir);
+    if (!existsSync(path.join(sysDir, "config.json"))) {
+      console.error(`  ✗ Missing config.json in ${sources.system.targetDir}`);
+      allOk = false;
+    }
+    if (!existsSync(path.join(sysDir, "articles"))) {
+      console.error(`  ✗ Missing articles/ in ${sources.system.targetDir}`);
+      allOk = false;
+    }
+  }
+
+  if (allOk) {
     console.log("  ✓ All content directories verified.\n");
   } else {
     console.error(
       "\n✗ Content structure verification failed. Check the errors above.\n"
     );
-    process.exit(1);
+    if (isCI) process.exit(1);
   }
 }
 

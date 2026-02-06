@@ -1,12 +1,38 @@
 /**
  * Custom MDX component map — overrides default HTML elements
  * rendered by MDX with styled versions for the Wikipefia design.
+ *
+ * Also registers custom interactive components used in article content.
  */
 
 import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
+import {
+  Callout,
+  Tabs,
+  Tab,
+  Collapse,
+  Quiz,
+  Question,
+  Option,
+  CodePlayground,
+  Figure,
+  MathBlock,
+} from "@/components/mdx";
 
 export const mdxComponents: MDXComponents = {
+  // Custom content components
+  Callout,
+  Tabs,
+  Tab,
+  Collapse,
+  Quiz,
+  Question,
+  Option,
+  CodePlayground,
+  Figure,
+  MathBlock,
+
   // Typography
   h1: ({ children, id, ...props }) => (
     <h1

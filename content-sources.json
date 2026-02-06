@@ -4,9 +4,19 @@
       "repo": "wikipefia/subject-repo-template",
       "branch": "main",
       "path": ".",
-      "targetDir": "content/subjects/linear-algebra"
+      "targetDir": "content/subjects/discrete-mathematics"
     }
   ],
-  "teachers": [],
-  "system": {}
+  "teachers": {
+    "repo": "wikipefia/teachers",
+    "branch": "main",
+    "path": ".",
+    "targetDir": "content/teachers"
+  },
+  "system": {
+    "repo": "wikipefia/system-articles",
+    "branch": "main",
+    "path": ".",
+    "targetDir": "content/system"
+  }
 }
