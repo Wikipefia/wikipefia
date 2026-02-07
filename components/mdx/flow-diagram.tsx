@@ -90,7 +90,7 @@ export function FlowDiagram({
   });
 
   /* ── Auto-generate arrows if none provided ── */
-  const effectiveArrows =
+  const effectiveArrows: FlowArrowProps[] =
     arrows.length > 0
       ? arrows
       : nodes.slice(0, -1).map((n, i) => ({
