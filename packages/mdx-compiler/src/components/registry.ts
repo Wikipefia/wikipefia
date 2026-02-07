@@ -111,6 +111,127 @@ export const componentRegistry: Record<string, ComponentContract> = {
     props: {},
     childrenRequired: true,
   },
+
+  // ── Graph (interactive function plotter) ─────
+  Graph: {
+    props: {
+      title: { type: "string" },
+      xLabel: { type: "string" },
+      yLabel: { type: "string" },
+      width: { type: "number" },
+      height: { type: "number" },
+      // xDomain and yDomain are array expressions — validated at runtime
+    },
+    childrenRequired: true,
+  },
+  Plot: {
+    props: {
+      // fn is a JS function expression — cannot be statically validated
+      color: { type: "string" },
+      label: { type: "string" },
+      dashed: { type: "boolean" },
+      strokeWidth: { type: "number" },
+    },
+    parent: "Graph",
+  },
+  Slider: {
+    props: {
+      name: { required: true, type: "string" },
+      min: { type: "number" },
+      max: { type: "number" },
+      default: { type: "number" },
+      step: { type: "number" },
+      label: { type: "string" },
+    },
+    // No parent constraint — used in both Graph and Interactive
+  },
+
+  // ── Interactive (reactive sandbox) ───────────
+  Interactive: {
+    props: {
+      title: { type: "string" },
+    },
+    childrenRequired: true,
+  },
+  Value: {
+    props: {
+      label: { required: true, type: "string" },
+      // fn is a JS function expression — cannot be statically validated
+    },
+    parent: "Interactive",
+  },
+  Toggle: {
+    props: {
+      name: { required: true, type: "string" },
+      default: { type: "boolean" },
+      label: { type: "string" },
+    },
+    parent: "Interactive",
+  },
+
+  // ── Timeline ─────────────────────────────────
+  Timeline: {
+    props: {
+      title: { type: "string" },
+    },
+    childrenRequired: true,
+  },
+  TimelineEvent: {
+    props: {
+      date: { required: true, type: "string" },
+      title: { required: true, type: "string" },
+      color: { type: "string" },
+    },
+    parent: "Timeline",
+  },
+
+  // ── DataTable ────────────────────────────────
+  DataTable: {
+    props: {
+      caption: { type: "string" },
+      // columns and rows are array expressions — validated at runtime
+      sortable: { type: "boolean" },
+    },
+  },
+
+  // ── Comparison ───────────────────────────────
+  Comparison: {
+    props: {
+      title: { type: "string" },
+    },
+    childrenRequired: true,
+  },
+  ComparisonItem: {
+    props: {
+      title: { required: true, type: "string" },
+      color: { type: "string" },
+    },
+    parent: "Comparison",
+    childrenRequired: true,
+  },
+
+  // ── Definition ───────────────────────────────
+  Definition: {
+    props: {
+      term: { required: true, type: "string" },
+    },
+    childrenRequired: true,
+  },
+
+  // ── StepByStep ───────────────────────────────
+  StepByStep: {
+    props: {
+      title: { type: "string" },
+    },
+    childrenRequired: true,
+  },
+  Step: {
+    props: {
+      title: { required: true, type: "string" },
+    },
+    parent: "StepByStep",
+    childrenRequired: true,
+  },
 };
 
 /** Set of all known component names for quick lookup. */

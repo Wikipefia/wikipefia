@@ -18,6 +18,20 @@ import {
   CodePlayground,
   Figure,
   MathBlock,
+  Graph,
+  Plot,
+  Slider,
+  Interactive,
+  Value,
+  Toggle,
+  Timeline,
+  TimelineEvent,
+  DataTable,
+  Comparison,
+  ComparisonItem,
+  Definition,
+  StepByStep,
+  Step,
 } from "@/components/mdx";
 
 export const mdxComponents: MDXComponents = {
@@ -32,6 +46,24 @@ export const mdxComponents: MDXComponents = {
   CodePlayground,
   Figure,
   MathBlock,
+
+  // Interactive graphing & sandbox
+  Graph,
+  Plot,
+  Slider,
+  Interactive,
+  Value,
+  Toggle,
+
+  // Article structure components
+  Timeline,
+  TimelineEvent,
+  DataTable,
+  Comparison,
+  ComparisonItem,
+  Definition,
+  StepByStep,
+  Step,
 
   // Typography
   h1: ({ children, id, ...props }) => (
