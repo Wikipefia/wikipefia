@@ -127,7 +127,7 @@ export const componentRegistry: Record<string, ComponentContract> = {
   },
   Plot: {
     props: {
-      fn: {}, // JS function expression — cannot be statically validated
+      expr: { required: true, type: "string" },
       color: { type: "string" },
       label: { type: "string" },
       dashed: { type: "boolean" },
@@ -157,7 +157,10 @@ export const componentRegistry: Record<string, ComponentContract> = {
   Value: {
     props: {
       label: { required: true, type: "string" },
-      fn: {}, // JS function expression — cannot be statically validated
+      expr: { required: true, type: "string" },
+      decimals: { type: "number" },
+      prefix: { type: "string" },
+      suffix: { type: "string" },
     },
     parent: "Interactive",
   },

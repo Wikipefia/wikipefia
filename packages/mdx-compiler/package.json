@@ -1,6 +1,6 @@
 {
   "name": "@wikipefia/mdx-compiler",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Shared MDX compiler, schemas, and validation for Wikipefia content repositories",
   "type": "module",
   "main": "./dist/index.js",

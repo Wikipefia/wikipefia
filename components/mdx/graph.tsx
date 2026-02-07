@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Children, type ReactNode } from "react";
+import { safeEval } from "@/lib/math/safe-eval";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -22,8 +23,9 @@ const PALETTE = [
    ═══════════════════════════════════════════════════ */
 
 interface PlotProps {
-  /** JS function: (x, vars) => y. `vars` contains current slider values. */
-  fn: (x: number, vars: Record<string, number>) => number;
+  /** Math expression string. Variable `x` is the horizontal axis.
+   *  Slider variables are available by name (e.g. `"a - b * x"`). */
+  expr: string;
   /** Line color. Auto-assigned from palette if omitted. */
   color?: string;
   /** Legend label. */
@@ -140,7 +142,7 @@ export function Graph({
     if (!child || typeof child !== "object" || !("props" in child)) return;
     const p = (child as AnyElement).props;
 
-    if (typeof p.fn === "function") {
+    if (typeof p.expr === "string" && !p.name) {
       plots.push(p as PlotProps);
     } else if (typeof p.name === "string" && p.min !== undefined) {
       sliderDefs.push(p as SliderProps);
@@ -169,14 +171,11 @@ export function Graph({
     const dx = (xMax - xMin) / 200;
     for (const plot of plots) {
       for (let i = 0; i <= 200; i++) {
-        try {
-          const y = plot.fn(xMin + i * dx, vars);
-          if (isFinite(y) && Math.abs(y) < 1e8) {
-            lo = Math.min(lo, y);
-            hi = Math.max(hi, y);
-          }
-        } catch {
-          /* skip evaluation errors */
+        const x = xMin + i * dx;
+        const y = safeEval(plot.expr, { ...vars, x });
+        if (isFinite(y) && Math.abs(y) < 1e8) {
+          lo = Math.min(lo, y);
+          hi = Math.max(hi, y);
         }
       }
     }
@@ -221,13 +220,7 @@ export function Graph({
 
     for (let i = 0; i <= SAMPLES; i++) {
       const x = xMin + i * dx;
-      let y: number;
-      try {
-        y = plot.fn(x, vars);
-      } catch {
-        inPath = false;
-        continue;
-      }
+      const y = safeEval(plot.expr, { ...vars, x });
 
       if (!isFinite(y)) {
         inPath = false;

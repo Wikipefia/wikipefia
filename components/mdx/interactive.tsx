@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Children, type ReactNode } from "react";
+import { safeEval } from "@/lib/math/safe-eval";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -12,8 +13,14 @@ type AnyElement = { props: Record<string, any> };
 interface ValueProps {
   /** Display label for this computed value. */
   label: string;
-  /** Compute function: receives all slider/toggle vars, returns display string. */
-  fn: (vars: Record<string, number>) => string;
+  /** Math expression string evaluated with all slider/toggle vars. */
+  expr: string;
+  /** Number of decimal places in output (default: 2). */
+  decimals?: number;
+  /** Prefix before the number (e.g. "$", "€"). */
+  prefix?: string;
+  /** Suffix after the number (e.g. "%", " CZK"). */
+  suffix?: string;
 }
 
 /** Displays a computed value inside `<Interactive>`. */
@@ -65,8 +72,8 @@ export function Interactive({ title, children }: InteractiveProps) {
     if (!child || typeof child !== "object" || !("props" in child)) return;
     const p = (child as AnyElement).props;
 
-    if (typeof p.fn === "function" && typeof p.label === "string") {
-      // Value: has fn + label, no name
+    if (typeof p.expr === "string" && typeof p.label === "string") {
+      // Value: has expr + label, no name
       valueDefs.push(p as ValueProps);
     } else if (
       typeof p.name === "string" &&
@@ -91,11 +98,11 @@ export function Interactive({ title, children }: InteractiveProps) {
 
   /* ── Compute values ── */
   const computedValues = valueDefs.map((vd) => {
-    try {
-      return { label: vd.label, value: vd.fn(vars) };
-    } catch {
-      return { label: vd.label, value: "—" };
-    }
+    const raw = safeEval(vd.expr, vars);
+    if (!isFinite(raw)) return { label: vd.label, value: "—" };
+    const decimals = vd.decimals ?? 2;
+    const formatted = `${vd.prefix ?? ""}${raw.toFixed(decimals)}${vd.suffix ?? ""}`;
+    return { label: vd.label, value: formatted };
   });
 
   return (
