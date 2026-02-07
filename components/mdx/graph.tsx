@@ -57,6 +57,91 @@ export function Slider(_: SliderProps) {
   return null;
 }
 
+/* ── Annotation data-carrier components ── */
+
+interface PointProps {
+  /** X coordinate (expr string). */
+  x: string;
+  /** Y coordinate (expr string). */
+  y: string;
+  /** Text label near the point. */
+  label?: string;
+  /** Dot color. */
+  color?: string;
+  /** Dot radius (default 4). */
+  r?: number;
+  /** Draw dashed line from point down to X axis. */
+  showXLine?: boolean;
+  /** Draw dashed line from point left to Y axis. */
+  showYLine?: boolean;
+}
+
+/** Marks a labeled point on the graph. Used inside `<Graph>`. */
+export function Point(_: PointProps) {
+  return null;
+}
+
+interface HLineProps {
+  /** Y coordinate (expr string). */
+  y: string;
+  color?: string;
+  dashed?: boolean;
+  label?: string;
+}
+
+/** Horizontal reference line. Used inside `<Graph>`. */
+export function HLine(_: HLineProps) {
+  return null;
+}
+
+interface VLineProps {
+  /** X coordinate (expr string). */
+  x: string;
+  color?: string;
+  dashed?: boolean;
+  label?: string;
+}
+
+/** Vertical reference line. Used inside `<Graph>`. */
+export function VLine(_: VLineProps) {
+  return null;
+}
+
+interface AreaProps {
+  /** Upper bound curve (expr string with `x`). */
+  above: string;
+  /** Lower bound curve (expr string with `x`). Defaults to "0" (x-axis). */
+  below?: string;
+  /** X range start (expr string). */
+  from: string;
+  /** X range end (expr string). */
+  to: string;
+  color?: string;
+  /** Fill opacity (default 0.15). */
+  opacity?: number;
+  label?: string;
+}
+
+/** Shaded area between two curves. Used inside `<Graph>`. */
+export function Area(_: AreaProps) {
+  return null;
+}
+
+interface SegmentProps {
+  x1: string;
+  y1: string;
+  x2: string;
+  y2: string;
+  color?: string;
+  dashed?: boolean;
+  strokeWidth?: number;
+}
+
+/** Line segment between two points. Used inside `<Graph>`. */
+export function Segment(_: SegmentProps) {
+  return null;
+}
+
 /* ═══════════════════════════════════════════════════
    Helpers
    ═══════════════════════════════════════════════════ */
@@ -137,12 +222,46 @@ export function Graph({
   /* ── Extract child definitions ── */
   const plots: PlotProps[] = [];
   const sliderDefs: SliderProps[] = [];
+  const pointDefs: PointProps[] = [];
+  const hLineDefs: HLineProps[] = [];
+  const vLineDefs: VLineProps[] = [];
+  const areaDefs: AreaProps[] = [];
+  const segmentDefs: SegmentProps[] = [];
 
   Children.forEach(children, (child) => {
     if (!child || typeof child !== "object" || !("props" in child)) return;
     const p = (child as AnyElement).props;
 
-    if (typeof p.expr === "string" && !p.name) {
+    if (typeof p.above === "string") {
+      // Area: has `above`
+      areaDefs.push(p as AreaProps);
+    } else if (typeof p.x1 === "string" && typeof p.y1 === "string") {
+      // Segment: has x1+y1
+      segmentDefs.push(p as SegmentProps);
+    } else if (
+      typeof p.x === "string" &&
+      typeof p.y === "string" &&
+      typeof p.expr !== "string"
+    ) {
+      // Point: has x+y, no expr
+      pointDefs.push(p as PointProps);
+    } else if (
+      typeof p.y === "string" &&
+      typeof p.x !== "string" &&
+      typeof p.expr !== "string" &&
+      typeof p.name !== "string"
+    ) {
+      // HLine: has y, no x, no expr, no name
+      hLineDefs.push(p as HLineProps);
+    } else if (
+      typeof p.x === "string" &&
+      typeof p.y !== "string" &&
+      typeof p.expr !== "string" &&
+      typeof p.name !== "string"
+    ) {
+      // VLine: has x, no y, no expr, no name
+      vLineDefs.push(p as VLineProps);
+    } else if (typeof p.expr === "string" && !p.name) {
       plots.push(p as PlotProps);
     } else if (typeof p.name === "string" && p.min !== undefined) {
       sliderDefs.push(p as SliderProps);
@@ -360,6 +479,41 @@ export function Graph({
 
         {/* Plot curves (clipped to plot area) */}
         <g clipPath={`url(#${clipId})`}>
+          {/* Shaded areas (render below curves) */}
+          {areaDefs.map((a, i) => {
+            const xFrom = safeEval(a.from, vars);
+            const xTo = safeEval(a.to, vars);
+            if (!isFinite(xFrom) || !isFinite(xTo) || xFrom >= xTo)
+              return null;
+            const belowExpr = a.below ?? "0";
+            const steps = 120;
+            const dx = (xTo - xFrom) / steps;
+            const pts: string[] = [];
+            // Top edge (above curve, left to right)
+            for (let j = 0; j <= steps; j++) {
+              const xv = xFrom + j * dx;
+              const yv = safeEval(a.above, { ...vars, x: xv });
+              if (isFinite(yv))
+                pts.push(`${toX(xv).toFixed(1)},${toY(yv).toFixed(1)}`);
+            }
+            // Bottom edge (below curve, right to left)
+            for (let j = steps; j >= 0; j--) {
+              const xv = xFrom + j * dx;
+              const yv = safeEval(belowExpr, { ...vars, x: xv });
+              if (isFinite(yv))
+                pts.push(`${toX(xv).toFixed(1)},${toY(yv).toFixed(1)}`);
+            }
+            return (
+              <polygon
+                key={`area${i}`}
+                points={pts.join(" ")}
+                fill={a.color || "#0066cc"}
+                fillOpacity={a.opacity ?? 0.15}
+                stroke="none"
+              />
+            );
+          })}
+
           {pathStrings.map((d, i) => (
             <path
               key={i}
@@ -372,6 +526,143 @@ export function Graph({
               strokeLinejoin="round"
             />
           ))}
+
+          {/* Segments */}
+          {segmentDefs.map((s, i) => {
+            const sx1 = safeEval(s.x1, vars);
+            const sy1 = safeEval(s.y1, vars);
+            const sx2 = safeEval(s.x2, vars);
+            const sy2 = safeEval(s.y2, vars);
+            if ([sx1, sy1, sx2, sy2].some((v) => !isFinite(v))) return null;
+            return (
+              <line
+                key={`seg${i}`}
+                x1={toX(sx1)}
+                y1={toY(sy1)}
+                x2={toX(sx2)}
+                y2={toY(sy2)}
+                stroke={s.color || "#cc6600"}
+                strokeWidth={s.strokeWidth ?? 1.5}
+                strokeDasharray={s.dashed ? "6 3" : undefined}
+              />
+            );
+          })}
+
+          {/* HLines */}
+          {hLineDefs.map((h, i) => {
+            const yv = safeEval(h.y, vars);
+            if (!isFinite(yv)) return null;
+            const py = toY(yv);
+            return (
+              <g key={`hl${i}`}>
+                <line
+                  x1={pad.left}
+                  y1={py}
+                  x2={pad.left + pW}
+                  y2={py}
+                  stroke={h.color || "#999"}
+                  strokeWidth={1}
+                  strokeDasharray={h.dashed !== false ? "6 3" : undefined}
+                />
+                {h.label && (
+                  <text
+                    x={pad.left + pW + 4}
+                    y={py + 3}
+                    fontSize={8}
+                    fontFamily="var(--font-mono)"
+                    fontWeight="bold"
+                    fill={h.color || "#999"}
+                  >
+                    {h.label}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+
+          {/* VLines */}
+          {vLineDefs.map((v, i) => {
+            const xv = safeEval(v.x, vars);
+            if (!isFinite(xv)) return null;
+            const px = toX(xv);
+            return (
+              <g key={`vl${i}`}>
+                <line
+                  x1={px}
+                  y1={pad.top}
+                  x2={px}
+                  y2={pad.top + pH}
+                  stroke={v.color || "#999"}
+                  strokeWidth={1}
+                  strokeDasharray={v.dashed !== false ? "6 3" : undefined}
+                />
+                {v.label && (
+                  <text
+                    x={px}
+                    y={pad.top + pH + 16}
+                    textAnchor="middle"
+                    fontSize={8}
+                    fontFamily="var(--font-mono)"
+                    fontWeight="bold"
+                    fill={v.color || "#999"}
+                  >
+                    {v.label}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+
+          {/* Points (with projection lines) */}
+          {pointDefs.map((pt, i) => {
+            const xv = safeEval(pt.x, vars);
+            const yv = safeEval(pt.y, vars);
+            if (!isFinite(xv) || !isFinite(yv)) return null;
+            const px = toX(xv);
+            const py = toY(yv);
+            const c = pt.color || "#1a1a1a";
+            return (
+              <g key={`pt${i}`}>
+                {pt.showYLine && (
+                  <line
+                    x1={pad.left}
+                    y1={py}
+                    x2={px}
+                    y2={py}
+                    stroke={c}
+                    strokeWidth={1}
+                    strokeDasharray="4 3"
+                    opacity={0.5}
+                  />
+                )}
+                {pt.showXLine && (
+                  <line
+                    x1={px}
+                    y1={py}
+                    x2={px}
+                    y2={pad.top + pH}
+                    stroke={c}
+                    strokeWidth={1}
+                    strokeDasharray="4 3"
+                    opacity={0.5}
+                  />
+                )}
+                <circle cx={px} cy={py} r={pt.r ?? 4} fill={c} />
+                {pt.label && (
+                  <text
+                    x={px + 7}
+                    y={py - 7}
+                    fontSize={9}
+                    fontFamily="var(--font-mono)"
+                    fontWeight="bold"
+                    fill={c}
+                  >
+                    {pt.label}
+                  </text>
+                )}
+              </g>
+            );
+          })}
         </g>
 
         {/* Plot area border */}

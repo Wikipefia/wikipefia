@@ -21,6 +21,11 @@ import {
   Graph,
   Plot,
   Slider,
+  Point,
+  HLine,
+  VLine,
+  Area,
+  Segment,
   Interactive,
   Value,
   Toggle,
@@ -32,6 +37,18 @@ import {
   Definition,
   StepByStep,
   Step,
+  FlowDiagram,
+  FlowNode,
+  FlowArrow,
+  CycleDiagram,
+  CycleNode,
+  BarChart,
+  Bar,
+  Diagram,
+  DBox,
+  DCircle,
+  DArrow,
+  DLabel,
 } from "@/components/mdx";
 
 export const mdxComponents: MDXComponents = {
@@ -51,6 +68,11 @@ export const mdxComponents: MDXComponents = {
   Graph,
   Plot,
   Slider,
+  Point,
+  HLine,
+  VLine,
+  Area,
+  Segment,
   Interactive,
   Value,
   Toggle,
@@ -64,6 +86,20 @@ export const mdxComponents: MDXComponents = {
   Definition,
   StepByStep,
   Step,
+
+  // Diagram components
+  FlowDiagram,
+  FlowNode,
+  FlowArrow,
+  CycleDiagram,
+  CycleNode,
+  BarChart,
+  Bar,
+  Diagram,
+  DBox,
+  DCircle,
+  DArrow,
+  DLabel,
 
   // Typography
   h1: ({ children, id, ...props }) => (

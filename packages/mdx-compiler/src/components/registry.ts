@@ -135,6 +135,60 @@ export const componentRegistry: Record<string, ComponentContract> = {
     },
     parent: "Graph",
   },
+  Point: {
+    props: {
+      x: { required: true, type: "string" },
+      y: { required: true, type: "string" },
+      label: { type: "string" },
+      color: { type: "string" },
+      r: { type: "number" },
+      showXLine: { type: "boolean" },
+      showYLine: { type: "boolean" },
+    },
+    parent: "Graph",
+  },
+  HLine: {
+    props: {
+      y: { required: true, type: "string" },
+      color: { type: "string" },
+      dashed: { type: "boolean" },
+      label: { type: "string" },
+    },
+    parent: "Graph",
+  },
+  VLine: {
+    props: {
+      x: { required: true, type: "string" },
+      color: { type: "string" },
+      dashed: { type: "boolean" },
+      label: { type: "string" },
+    },
+    parent: "Graph",
+  },
+  Area: {
+    props: {
+      above: { required: true, type: "string" },
+      below: { type: "string" },
+      from: { required: true, type: "string" },
+      to: { required: true, type: "string" },
+      color: { type: "string" },
+      opacity: { type: "number" },
+      label: { type: "string" },
+    },
+    parent: "Graph",
+  },
+  Segment: {
+    props: {
+      x1: { required: true, type: "string" },
+      y1: { required: true, type: "string" },
+      x2: { required: true, type: "string" },
+      y2: { required: true, type: "string" },
+      color: { type: "string" },
+      dashed: { type: "boolean" },
+      strokeWidth: { type: "number" },
+    },
+    parent: "Graph",
+  },
   Slider: {
     props: {
       name: { required: true, type: "string" },
@@ -236,6 +290,132 @@ export const componentRegistry: Record<string, ComponentContract> = {
     },
     parent: "StepByStep",
     childrenRequired: true,
+  },
+
+  // ── FlowDiagram ───────────────────────────────
+  FlowDiagram: {
+    props: {
+      title: { type: "string" },
+      direction: { type: "string", enum: ["horizontal", "vertical"] },
+      animate: { type: "boolean" },
+    },
+    childrenRequired: true,
+  },
+  FlowNode: {
+    props: {
+      id: { required: true, type: "string" },
+      label: { required: true, type: "string" },
+      icon: { type: "string" },
+      color: { type: "string" },
+      highlight: { type: "boolean" },
+    },
+    parent: "FlowDiagram",
+  },
+  FlowArrow: {
+    props: {
+      from: { required: true, type: "string" },
+      to: { required: true, type: "string" },
+      label: { type: "string" },
+      color: { type: "string" },
+      animated: { type: "boolean" },
+    },
+    parent: "FlowDiagram",
+  },
+
+  // ── CycleDiagram ──────────────────────────────
+  CycleDiagram: {
+    props: {
+      title: { type: "string" },
+      size: { type: "number" },
+      animate: { type: "boolean" },
+      clockwise: { type: "boolean" },
+    },
+    childrenRequired: true,
+  },
+  CycleNode: {
+    props: {
+      label: { required: true, type: "string" },
+      color: { type: "string" },
+      description: { type: "string" },
+      icon: { type: "string" },
+    },
+    parent: "CycleDiagram",
+  },
+
+  // ── BarChart ──────────────────────────────────
+  BarChart: {
+    props: {
+      title: { type: "string" },
+      orientation: { type: "string", enum: ["horizontal", "vertical"] },
+      animate: { type: "boolean" },
+      showValues: { type: "boolean" },
+    },
+    childrenRequired: true,
+  },
+  Bar: {
+    props: {
+      label: { required: true, type: "string" },
+      value: { type: "number" },
+      expr: { type: "string" },
+      color: { type: "string" },
+    },
+    parent: "BarChart",
+  },
+
+  // ── Diagram (low-level canvas) ────────────────
+  Diagram: {
+    props: {
+      title: { type: "string" },
+      width: { type: "number" },
+      height: { type: "number" },
+      animate: { type: "boolean" },
+    },
+    childrenRequired: true,
+  },
+  DBox: {
+    props: {
+      x: { required: true, type: "number" },
+      y: { required: true, type: "number" },
+      w: { required: true, type: "number" },
+      h: { required: true, type: "number" },
+      label: { type: "string" },
+      color: { type: "string" },
+      rounded: { type: "boolean" },
+    },
+    parent: "Diagram",
+  },
+  DCircle: {
+    props: {
+      x: { required: true, type: "number" },
+      y: { required: true, type: "number" },
+      r: { required: true, type: "number" },
+      label: { type: "string" },
+      color: { type: "string" },
+      pulse: { type: "boolean" },
+    },
+    parent: "Diagram",
+  },
+  DArrow: {
+    props: {
+      from: {}, // array expression
+      to: {},   // array expression
+      label: { type: "string" },
+      color: { type: "string" },
+      animated: { type: "boolean" },
+      curved: { type: "boolean" },
+    },
+    parent: "Diagram",
+  },
+  DLabel: {
+    props: {
+      x: { required: true, type: "number" },
+      y: { required: true, type: "number" },
+      text: { required: true, type: "string" },
+      fontSize: { type: "number" },
+      color: { type: "string" },
+      bold: { type: "boolean" },
+    },
+    parent: "Diagram",
   },
 };
 
