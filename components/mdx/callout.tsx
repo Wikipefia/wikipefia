@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { C } from "@/lib/theme";
 
 type CalloutType = "info" | "warning" | "error";
 
@@ -61,7 +62,7 @@ export function Callout({ type = "info", children }: CalloutProps) {
       {/* Content */}
       <div
         className="px-4 pt-2 pb-3 text-[14px] leading-[1.75]"
-        style={{ color: "#333", fontFamily: "var(--font-serif)" }}
+        style={{ color: C.text, fontFamily: "var(--font-serif)" }}
       >
         {children}
       </div>

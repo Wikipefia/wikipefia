@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { C } from "@/lib/theme";
 
 interface FigureProps {
   src: string;
@@ -16,8 +17,8 @@ export function Figure({
   height = 450,
 }: FigureProps) {
   return (
-    <figure className="mb-6 border-2 border-[#1a1a1a]">
-      <div className="relative overflow-hidden" style={{ backgroundColor: "#f5f5f5" }}>
+    <figure className="mb-6 border-2" style={{ borderColor: C.border }}>
+      <div className="relative overflow-hidden" style={{ backgroundColor: C.bg }}>
         <Image
           src={src}
           alt={alt}
@@ -30,16 +31,17 @@ export function Figure({
 
       {caption && (
         <figcaption
-          className="px-3 py-2 border-t-2 border-[#1a1a1a] text-[11px] leading-[1.6]"
+          className="px-3 py-2 border-t-2 text-[11px] leading-[1.6]"
           style={{
             fontFamily: "var(--font-mono)",
-            color: "#666",
-            backgroundColor: "#fafafa",
+            color: C.textMuted,
+            backgroundColor: C.bg,
+            borderColor: C.border,
           }}
         >
           <span
             className="font-bold uppercase tracking-[0.1em] mr-1.5"
-            style={{ color: "#1a1a1a" }}
+            style={{ color: C.text }}
           >
             Fig.
           </span>

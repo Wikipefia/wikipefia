@@ -112,7 +112,7 @@ export function HomePage({ data, locale }: { data: HomeData; locale: string }) {
               >
                 <div
                   className="px-4 py-2 text-[10px] font-bold uppercase tracking-wider flex items-center justify-between"
-                  style={{ backgroundColor: C.text, color: C.bgWhite }}
+                  style={{ backgroundColor: C.headerBg, color: C.headerText }}
                 >
                   <span>SYSTEM_STATUS</span>
                   <span className="opacity-50">EXPLORE →</span>
@@ -212,7 +212,7 @@ export function HomePage({ data, locale }: { data: HomeData; locale: string }) {
           <div className="border-2" style={{ borderColor: C.border }}>
             <div
               className="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-2 text-[10px] font-bold uppercase tracking-wider"
-              style={{ backgroundColor: C.text, color: C.bgWhite }}
+              style={{ backgroundColor: C.headerBg, color: C.headerText }}
             >
               <span>NAME</span>
               <span className="text-right w-16">ARTICLES</span>

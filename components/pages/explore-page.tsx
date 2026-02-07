@@ -362,7 +362,7 @@ function AllArticlesTable({
     <div className="border-2" style={{ borderColor: C.border }}>
       <div
         className="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-2 text-[10px] font-bold uppercase tracking-wider"
-        style={{ backgroundColor: C.text, color: C.bgWhite }}
+        style={{ backgroundColor: C.headerBg, color: C.headerText }}
       >
         <span>TITLE</span>
         <span className="text-right w-24 hidden md:block">PARENT</span>
@@ -471,7 +471,7 @@ export function ExplorePage({
               <div className="border-2 shrink-0" style={{ borderColor: C.border }}>
                 <div
                   className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider"
-                  style={{ backgroundColor: C.text, color: C.bgWhite }}
+                  style={{ backgroundColor: C.headerBg, color: C.headerText }}
                 >
                   MANIFEST
                 </div>
@@ -525,8 +525,8 @@ export function ExplorePage({
                 className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
                 style={{
                   backgroundColor:
-                    activeTab === tab.id ? C.text : "transparent",
-                  color: activeTab === tab.id ? C.bgWhite : C.textMuted,
+                    activeTab === tab.id ? C.headerBg : "transparent",
+                  color: activeTab === tab.id ? C.headerText : C.textMuted,
                   borderRight: `1px solid ${C.borderLight}`,
                 }}
               >
@@ -594,7 +594,7 @@ export function ExplorePage({
             <div className="border-2" style={{ borderColor: C.border }}>
               <div
                 className="grid grid-cols-[1fr_auto_auto] gap-4 px-4 py-2 text-[10px] font-bold uppercase tracking-wider"
-                style={{ backgroundColor: C.text, color: C.bgWhite }}
+                style={{ backgroundColor: C.headerBg, color: C.headerText }}
               >
                 <span>NAME</span>
                 <span className="text-right w-16">PINNED</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode, Children } from "react";
+import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -40,11 +41,11 @@ export function Tabs({ children }: TabsProps) {
   if (tabs.length === 0) return null;
 
   return (
-    <div className="mb-6 border-2 border-[#1a1a1a]">
+    <div className="mb-6 border-2" style={{ borderColor: C.border }}>
       {/* Tab bar */}
       <div
-        className="flex border-b-2 border-[#1a1a1a] overflow-x-auto"
-        style={{ backgroundColor: "#fafafa" }}
+        className="flex border-b-2 overflow-x-auto"
+        style={{ borderColor: C.border, backgroundColor: C.bg }}
       >
         {tabs.map((tab, i) => (
           <button
@@ -53,10 +54,10 @@ export function Tabs({ children }: TabsProps) {
             className="relative px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.1em] whitespace-nowrap transition-colors cursor-pointer"
             style={{
               fontFamily: "var(--font-mono)",
-              color: active === i ? "#1a1a1a" : "#888",
-              backgroundColor: active === i ? "#fff" : "transparent",
+              color: active === i ? C.text : C.textMuted,
+              backgroundColor: active === i ? C.bgWhite : "transparent",
               borderRight:
-                i < tabs.length - 1 ? "1px solid #e5e5e5" : "none",
+                i < tabs.length - 1 ? `1px solid ${C.borderLight}` : "none",
             }}
           >
             {tab.label}
@@ -64,7 +65,7 @@ export function Tabs({ children }: TabsProps) {
             {active === i && (
               <span
                 className="absolute bottom-0 left-0 right-0 h-[3px]"
-                style={{ backgroundColor: "#ff0000" }}
+                style={{ backgroundColor: C.red }}
               />
             )}
           </button>

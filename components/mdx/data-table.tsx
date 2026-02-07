@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { C } from "@/lib/theme";
 
 /* ── Smart numeric detection for sorting ── */
 
@@ -61,16 +62,16 @@ export function DataTable({
   }
 
   return (
-    <div className="mb-6 border-2 border-[#1a1a1a]">
+    <div className="mb-6 border-2" style={{ borderColor: C.border }}>
       {/* Header */}
       {caption && (
         <div
-          className="px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-          style={{ backgroundColor: "#1a1a1a" }}
+          className="px-4 py-2.5 border-b-2"
+          style={{ borderColor: C.border, backgroundColor: C.headerBg }}
         >
           <span
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
-            style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
             ■ {caption}
           </span>
@@ -83,8 +84,8 @@ export function DataTable({
           <thead>
             <tr
               style={{
-                backgroundColor: "#f5f5f5",
-                borderBottom: "2px solid #1a1a1a",
+                backgroundColor: C.bg,
+                borderBottom: `2px solid ${C.border}`,
               }}
             >
               {columns.map((col, i) => (
@@ -93,15 +94,15 @@ export function DataTable({
                   onClick={() => handleSort(i)}
                   className={`px-4 py-2.5 text-left text-[10px] font-bold uppercase tracking-[0.12em] ${
                     sortable
-                      ? "cursor-pointer select-none hover:bg-[#eaeaea] transition-colors"
+                      ? "cursor-pointer select-none transition-colors"
                       : ""
                   }`}
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#1a1a1a",
+                    color: C.text,
                     borderRight:
                       i < columns.length - 1
-                        ? "1px solid #e5e5e5"
+                        ? `1px solid ${C.borderLight}`
                         : undefined,
                   }}
                 >
@@ -112,7 +113,7 @@ export function DataTable({
                         className="text-[8px]"
                         style={{
                           color:
-                            sortCol === i ? "#ff0000" : "#ccc",
+                            sortCol === i ? C.red : C.borderLight,
                         }}
                       >
                         {sortCol === i
@@ -131,10 +132,10 @@ export function DataTable({
             {displayRows.map((row, ri) => (
               <tr
                 key={ri}
-                className="transition-colors hover:bg-[#f9f9f9]"
+                className="transition-colors"
                 style={{
                   borderTop:
-                    ri > 0 ? "1px solid #eee" : undefined,
+                    ri > 0 ? `1px solid ${C.borderLight}` : undefined,
                 }}
               >
                 {columns.map((_, ci) => (
@@ -143,10 +144,10 @@ export function DataTable({
                     className="px-4 py-2"
                     style={{
                       fontFamily: "var(--font-serif)",
-                      color: "#333",
+                      color: C.text,
                       borderRight:
                         ci < columns.length - 1
-                          ? "1px solid #f0f0f0"
+                          ? `1px solid ${C.borderLight}`
                           : undefined,
                     }}
                   >
@@ -164,9 +165,9 @@ export function DataTable({
         className="px-4 py-1.5 border-t text-[9px] uppercase tracking-[0.15em]"
         style={{
           fontFamily: "var(--font-mono)",
-          color: "#aaa",
-          borderColor: "#e5e5e5",
-          backgroundColor: "#fafafa",
+          color: C.textMuted,
+          borderColor: C.borderLight,
+          backgroundColor: C.bg,
         }}
       >
         {displayRows.length} row{displayRows.length !== 1 ? "s" : ""}

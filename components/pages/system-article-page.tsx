@@ -27,7 +27,7 @@ export function SystemArticlePage({
       <div className="mb-8">
         <span
           className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider"
-          style={{ backgroundColor: C.red, color: C.bgWhite }}
+          style={{ backgroundColor: C.red, color: C.headerText }}
         >
           SYSTEM_ARTICLE
         </span>

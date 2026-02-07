@@ -7,6 +7,7 @@ import {
   createContext,
   useContext,
 } from "react";
+import { C } from "@/lib/theme";
 
 /* ── Types ────────────────────────────────────────────── */
 
@@ -79,9 +80,9 @@ function QuestionInner({
       {/* Question text */}
       <p
         className="text-[13px] font-bold mb-3 flex gap-2"
-        style={{ fontFamily: "var(--font-mono)", color: "#1a1a1a" }}
+        style={{ fontFamily: "var(--font-mono)", color: C.text }}
       >
-        <span className="text-[#888] shrink-0">Q{index + 1}.</span>
+        <span style={{ color: C.textMuted }} className="shrink-0">Q{index + 1}.</span>
         <span>{text}</span>
       </p>
 
@@ -91,9 +92,9 @@ function QuestionInner({
           const isSelected = selected === opt.value;
           const isCorrect = opt.correct;
 
-          let borderColor = "#e5e5e5";
-          let bg = "transparent";
-          let textColor = "#333";
+          let borderColor: string = C.borderLight;
+          let bg: string = "transparent";
+          let textColor: string = C.text;
 
           if (submitted) {
             if (isCorrect) {
@@ -106,8 +107,8 @@ function QuestionInner({
               textColor = "#cc0000";
             }
           } else if (isSelected) {
-            borderColor = "#1a1a1a";
-            bg = "#f5f5f5";
+            borderColor = C.border;
+            bg = C.bg;
           }
 
           return (
@@ -132,10 +133,10 @@ function QuestionInner({
                       ? "#22863a"
                       : isSelected
                         ? "#cc0000"
-                        : "#ccc"
+                        : C.borderLight
                     : isSelected
-                      ? "#1a1a1a"
-                      : "#ccc",
+                      ? C.border
+                      : C.borderLight,
                 }}
               >
                 {submitted && isCorrect && (
@@ -155,7 +156,7 @@ function QuestionInner({
                 {!submitted && isSelected && (
                   <span
                     className="block w-1.5 h-1.5"
-                    style={{ backgroundColor: "#1a1a1a" }}
+                    style={{ backgroundColor: C.border }}
                   />
                 )}
               </span>
@@ -233,22 +234,22 @@ export function Quiz({ children }: QuizProps) {
   const allAnswered = questions.every((_, i) => answers[i] !== undefined);
 
   return (
-    <div className="mb-6 border-2 border-[#1a1a1a]">
+    <div className="mb-6 border-2" style={{ borderColor: C.border }}>
       {/* Header */}
       <div
-        className="flex items-center justify-between px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-        style={{ backgroundColor: "#1a1a1a" }}
+        className="flex items-center justify-between px-4 py-2.5 border-b-2"
+        style={{ borderColor: C.border, backgroundColor: C.headerBg }}
       >
         <span
           className="text-[10px] font-bold uppercase tracking-[0.15em]"
-          style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+          style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
         >
           ■ Quiz — {questions.length} question{questions.length !== 1 && "s"}
         </span>
         {submitted && (
           <span
             className="text-[10px] font-bold tracking-[0.1em]"
-            style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
             {getCorrectCount()}/{questions.length} CORRECT
           </span>
@@ -274,7 +275,10 @@ export function Quiz({ children }: QuizProps) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between px-4 py-3 border-t-2 border-[#e5e5e5]">
+      <div
+        className="flex items-center justify-between px-4 py-3 border-t-2"
+        style={{ borderColor: C.borderLight }}
+      >
         {!submitted ? (
           <button
             onClick={() => setSubmitted(true)}
@@ -282,9 +286,9 @@ export function Quiz({ children }: QuizProps) {
             className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.1em] border-2 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
             style={{
               fontFamily: "var(--font-mono)",
-              borderColor: "#1a1a1a",
-              backgroundColor: allAnswered ? "#1a1a1a" : "transparent",
-              color: allAnswered ? "#fafafa" : "#1a1a1a",
+              borderColor: C.border,
+              backgroundColor: allAnswered ? C.headerBg : "transparent",
+              color: allAnswered ? C.headerText : C.text,
             }}
           >
             Check Answers
@@ -295,8 +299,12 @@ export function Quiz({ children }: QuizProps) {
               setSubmitted(false);
               setAnswers({});
             }}
-            className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.1em] border-2 border-[#1a1a1a] cursor-pointer transition-colors hover:bg-[#f5f5f5]"
-            style={{ fontFamily: "var(--font-mono)", color: "#1a1a1a" }}
+            className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.1em] border-2 cursor-pointer transition-colors"
+            style={{
+              fontFamily: "var(--font-mono)",
+              borderColor: C.border,
+              color: C.text,
+            }}
           >
             Try Again
           </button>
@@ -305,7 +313,7 @@ export function Quiz({ children }: QuizProps) {
         {!submitted && (
           <span
             className="text-[10px] tracking-wider uppercase"
-            style={{ fontFamily: "var(--font-mono)", color: "#aaa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.textMuted }}
           >
             {Object.keys(answers).length}/{questions.length} answered
           </span>

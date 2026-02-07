@@ -43,7 +43,7 @@ export function SubjectFront({ subject, locale }: SubjectFrontProps) {
             <div className="flex flex-wrap items-center gap-2 mb-6">
               <span
                 className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider"
-                style={{ backgroundColor: C.text, color: C.bgWhite }}
+                style={{ backgroundColor: C.headerBg, color: C.headerText }}
               >
                 SUBJECT
               </span>
@@ -170,7 +170,7 @@ export function SubjectFront({ subject, locale }: SubjectFrontProps) {
                 >
                   <div
                     className="px-4 py-3 flex items-center justify-between"
-                    style={{ backgroundColor: C.text, color: C.bgWhite }}
+                    style={{ backgroundColor: C.headerBg, color: C.headerText }}
                   >
                     <span className="text-xs font-bold uppercase tracking-wider">
                       {loc(category.name, locale)}

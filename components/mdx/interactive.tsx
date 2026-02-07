@@ -2,6 +2,7 @@
 
 import { useState, Children, type ReactNode } from "react";
 import { safeEval } from "@/lib/math/safe-eval";
+import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -106,21 +107,21 @@ export function Interactive({ title, children }: InteractiveProps) {
   });
 
   return (
-    <div className="mb-6 border-2 border-[#1a1a1a]">
+    <div className="mb-6 border-2" style={{ borderColor: C.border }}>
       {/* ── Header ── */}
       <div
-        className="flex items-center justify-between px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-        style={{ backgroundColor: "#1a1a1a" }}
+        className="flex items-center justify-between px-4 py-2.5 border-b-2"
+        style={{ borderColor: C.border, backgroundColor: C.headerBg }}
       >
         <span
           className="text-[10px] font-bold uppercase tracking-[0.15em]"
-          style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+          style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
         >
           ▣ {title || "Interactive"}
         </span>
         <span
           className="text-[9px] uppercase tracking-[0.1em]"
-          style={{ fontFamily: "var(--font-mono)", color: "#666" }}
+          style={{ fontFamily: "var(--font-mono)", color: C.textMuted }}
         >
           {sliderDefs.length + toggleDefs.length} control
           {sliderDefs.length + toggleDefs.length !== 1 ? "s" : ""}
@@ -131,7 +132,7 @@ export function Interactive({ title, children }: InteractiveProps) {
       {(sliderDefs.length > 0 || toggleDefs.length > 0) && (
         <div
           className="px-4 py-3 space-y-3"
-          style={{ backgroundColor: "#fff" }}
+          style={{ backgroundColor: C.bgWhite }}
         >
           {/* Sliders */}
           {sliderDefs.map((s) => {
@@ -145,7 +146,7 @@ export function Interactive({ title, children }: InteractiveProps) {
                   className="shrink-0 text-[10px] font-bold uppercase tracking-[0.1em] min-w-28"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#1a1a1a",
+                    color: C.text,
                   }}
                 >
                   {s.label || s.name}
@@ -168,7 +169,7 @@ export function Interactive({ title, children }: InteractiveProps) {
                   className="shrink-0 text-[11px] font-bold tabular-nums w-16 text-right"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#ff0000",
+                    color: C.red,
                   }}
                 >
                   {val.toFixed(decimals)}
@@ -187,7 +188,7 @@ export function Interactive({ title, children }: InteractiveProps) {
                   className="shrink-0 text-[10px] font-bold uppercase tracking-[0.1em] min-w-28"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#1a1a1a",
+                    color: C.text,
                   }}
                 >
                   {t.label || t.name}
@@ -202,15 +203,15 @@ export function Interactive({ title, children }: InteractiveProps) {
                   className="flex items-center gap-1.5 px-2.5 py-1 border-2 cursor-pointer transition-colors text-[10px] font-bold uppercase tracking-[0.1em]"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    borderColor: isOn ? "#1a1a1a" : "#ccc",
-                    backgroundColor: isOn ? "#1a1a1a" : "transparent",
-                    color: isOn ? "#fafafa" : "#999",
+                    borderColor: isOn ? C.border : C.borderLight,
+                    backgroundColor: isOn ? C.headerBg : "transparent",
+                    color: isOn ? C.headerText : C.textMuted,
                   }}
                 >
                   <span
                     className="inline-block w-2 h-2"
                     style={{
-                      backgroundColor: isOn ? "#ff0000" : "#ccc",
+                      backgroundColor: isOn ? C.red : C.borderLight,
                     }}
                   />
                   {isOn ? "On" : "Off"}
@@ -224,22 +225,22 @@ export function Interactive({ title, children }: InteractiveProps) {
       {/* ── Computed values ── */}
       {computedValues.length > 0 && (
         <div
-          className="border-t-2 border-[#e5e5e5]"
-          style={{ backgroundColor: "#fafafa" }}
+          className="border-t-2"
+          style={{ borderColor: C.borderLight, backgroundColor: C.bg }}
         >
           {computedValues.map((cv, i) => (
             <div
               key={i}
               className="flex items-center justify-between px-4 py-2.5"
               style={{
-                borderTop: i > 0 ? "1px solid #e5e5e5" : undefined,
+                borderTop: i > 0 ? `1px solid ${C.borderLight}` : undefined,
               }}
             >
               <span
                 className="text-[10px] font-bold uppercase tracking-[0.1em]"
                 style={{
                   fontFamily: "var(--font-mono)",
-                  color: "#888",
+                  color: C.textMuted,
                 }}
               >
                 {cv.label}
@@ -248,7 +249,7 @@ export function Interactive({ title, children }: InteractiveProps) {
                 className="text-[15px] font-bold tabular-nums"
                 style={{
                   fontFamily: "var(--font-mono)",
-                  color: "#1a1a1a",
+                  color: C.text,
                 }}
               >
                 {cv.value}

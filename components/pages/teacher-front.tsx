@@ -76,7 +76,7 @@ export function TeacherFront({ teacher, locale }: TeacherFrontProps) {
             <div className="flex flex-wrap items-center gap-2 mb-6">
               <span
                 className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider"
-                style={{ backgroundColor: C.text, color: C.bgWhite }}
+                style={{ backgroundColor: C.headerBg, color: C.headerText }}
               >
                 TEACHER
               </span>

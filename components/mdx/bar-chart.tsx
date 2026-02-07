@@ -3,6 +3,7 @@
 import { Children, useState, useRef, type ReactNode } from "react";
 import { motion, useInView } from "motion/react";
 import { safeEval } from "@/lib/math/safe-eval";
+import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -103,16 +104,16 @@ export function BarChart({
   const isH = orientation === "horizontal";
 
   return (
-    <div ref={ref} className="mb-6 border-2 border-[#1a1a1a]">
+    <div ref={ref} className="mb-6 border-2" style={{ borderColor: C.border }}>
       {/* Header */}
       {title && (
         <div
-          className="flex items-center px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-          style={{ backgroundColor: "#1a1a1a" }}
+          className="flex items-center px-4 py-2.5 border-b-2"
+          style={{ backgroundColor: C.headerBg, borderColor: C.border }}
         >
           <span
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
-            style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
             ▥ {title}
           </span>
@@ -123,7 +124,7 @@ export function BarChart({
       <div
         className={`px-4 py-4 ${isH ? "space-y-3" : "flex items-end gap-3 justify-center"}`}
         style={{
-          backgroundColor: "#fafafa",
+          backgroundColor: C.bg,
           minHeight: isH ? undefined : 180,
         }}
       >
@@ -139,12 +140,12 @@ export function BarChart({
                   className="shrink-0 text-[9px] font-bold uppercase tracking-[0.1em] min-w-20 text-right"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#1a1a1a",
+                    color: C.text,
                   }}
                 >
                   {b.label}
                 </span>
-                <div className="flex-1 h-6 relative" style={{ backgroundColor: "#eee" }}>
+                <div className="flex-1 h-6 relative" style={{ backgroundColor: C.borderLight }}>
                   <motion.div
                     className="h-full absolute left-0 top-0"
                     style={{ backgroundColor: c }}
@@ -163,7 +164,7 @@ export function BarChart({
                       className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold"
                       style={{
                         fontFamily: "var(--font-mono)",
-                        color: pct > 60 ? "#fff" : "#1a1a1a",
+                        color: pct > 60 ? "#fff" : C.text,
                         zIndex: 1,
                       }}
                     >
@@ -201,7 +202,7 @@ export function BarChart({
                 className="w-full relative"
                 style={{
                   height: 120,
-                  backgroundColor: "#eee",
+                  backgroundColor: C.borderLight,
                 }}
               >
                 <motion.div
@@ -222,7 +223,7 @@ export function BarChart({
                 className="text-[8px] font-bold uppercase tracking-[0.05em] text-center"
                 style={{
                   fontFamily: "var(--font-mono)",
-                  color: "#1a1a1a",
+                  color: C.text,
                 }}
               >
                 {b.label}
@@ -235,8 +236,8 @@ export function BarChart({
       {/* Sliders (if interactive) */}
       {sliderDefs.length > 0 && (
         <div
-          className="px-4 py-3 border-t-2 border-[#e5e5e5] space-y-3"
-          style={{ backgroundColor: "#fff" }}
+          className="px-4 py-3 border-t-2 space-y-3"
+          style={{ backgroundColor: C.bgWhite, borderColor: C.borderLight }}
         >
           {sliderDefs.map((s) => {
             const val = vars[s.name] ?? s.default ?? 0;
@@ -249,7 +250,7 @@ export function BarChart({
                   className="shrink-0 text-[10px] font-bold uppercase tracking-[0.1em] min-w-24"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#1a1a1a",
+                    color: C.text,
                   }}
                 >
                   {s.label || s.name}
@@ -272,7 +273,7 @@ export function BarChart({
                   className="shrink-0 text-[11px] font-bold tabular-nums w-14 text-right"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#ff0000",
+                    color: C.red,
                   }}
                 >
                   {val.toFixed(decimals)}

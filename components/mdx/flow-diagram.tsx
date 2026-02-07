@@ -2,6 +2,7 @@
 
 import { Children, type ReactNode, useRef, useState, useEffect } from "react";
 import { motion, useInView } from "motion/react";
+import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -127,15 +128,15 @@ export function FlowDiagram({
   const totalH = svgH + padY * 2;
 
   return (
-    <div ref={ref} className="mb-6 border-2 border-[#1a1a1a]">
+    <div ref={ref} className="mb-6 border-2" style={{ borderColor: C.border }}>
       {title && (
         <div
-          className="flex items-center px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-          style={{ backgroundColor: "#1a1a1a" }}
+          className="flex items-center px-4 py-2.5 border-b-2"
+          style={{ backgroundColor: C.headerBg, borderColor: C.border }}
         >
           <span
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
-            style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
             ◆ {title}
           </span>
@@ -145,7 +146,7 @@ export function FlowDiagram({
       <svg
         viewBox={`0 0 ${totalW} ${totalH}`}
         className="w-full h-auto block"
-        style={{ backgroundColor: "#fafafa" }}
+        style={{ backgroundColor: C.bg }}
       >
         <defs>
           <marker
@@ -157,7 +158,7 @@ export function FlowDiagram({
             markerHeight="6"
             orient="auto-start-reverse"
           >
-            <path d="M0 0L10 4L0 8z" fill="#1a1a1a" />
+            <path d="M0 0L10 4L0 8z" fill={C.text} />
           </marker>
         </defs>
 
@@ -195,7 +196,7 @@ export function FlowDiagram({
                 y1={sy}
                 x2={ex}
                 y2={ey}
-                stroke={a.color || "#1a1a1a"}
+                stroke={a.color || C.text}
                 strokeWidth={2}
                 markerEnd="url(#flow-arrow)"
                 initial={shouldAnimate ? { pathLength: 0, opacity: 0 } : false}
@@ -216,7 +217,7 @@ export function FlowDiagram({
                   textAnchor="middle"
                   fontSize={8}
                   fontFamily="var(--font-mono)"
-                  fill="#888"
+                  fill={C.textMuted}
                   fontWeight="bold"
                 >
                   {a.label}
@@ -231,7 +232,7 @@ export function FlowDiagram({
           const pos = positions[i];
           const x = padX + pos.x;
           const y = padY + pos.y;
-          const c = n.color || (n.highlight ? "#ff0000" : "#1a1a1a");
+          const c = n.color || (n.highlight ? C.red : C.text);
 
           return (
             <motion.g
@@ -245,7 +246,7 @@ export function FlowDiagram({
                 y={y}
                 width={nodeW}
                 height={nodeH}
-                fill={n.highlight ? c : "#fff"}
+                fill={n.highlight ? c : C.bgWhite}
                 stroke={c}
                 strokeWidth={n.highlight ? 2.5 : 2}
                 rx={0}

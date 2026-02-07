@@ -22,8 +22,8 @@ export function LocaleSwitcher({ currentLocale }: { currentLocale: string }) {
           onClick={() => switchLocale(locale)}
           className="px-2 py-1 text-[10px] font-bold cursor-pointer transition-colors"
           style={{
-            backgroundColor: locale === currentLocale ? C.text : "transparent",
-            color: locale === currentLocale ? C.bgWhite : C.text,
+            backgroundColor: locale === currentLocale ? C.headerBg : "transparent",
+            color: locale === currentLocale ? C.headerText : C.text,
             borderRight:
               i < arr.length - 1 ? `2px solid ${C.border}` : "none",
           }}

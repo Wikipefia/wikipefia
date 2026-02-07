@@ -2,6 +2,7 @@
 
 import { Children, type ReactNode, useRef } from "react";
 import { motion, useInView } from "motion/react";
+import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -110,15 +111,15 @@ export function Diagram({
   let idx = 0;
 
   return (
-    <div ref={ref} className="mb-6 border-2 border-[#1a1a1a]">
+    <div ref={ref} className="mb-6 border-2" style={{ borderColor: C.border }}>
       {title && (
         <div
-          className="flex items-center px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-          style={{ backgroundColor: "#1a1a1a" }}
+          className="flex items-center px-4 py-2.5 border-b-2"
+          style={{ borderColor: C.border, backgroundColor: C.headerBg }}
         >
           <span
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
-            style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
             ◇ {title}
           </span>
@@ -128,7 +129,7 @@ export function Diagram({
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="w-full h-auto block"
-        style={{ backgroundColor: "#fafafa" }}
+        style={{ backgroundColor: C.bg }}
       >
         <defs>
           <marker
@@ -140,7 +141,7 @@ export function Diagram({
             markerHeight="6"
             orient="auto-start-reverse"
           >
-            <path d="M0 0L10 4L0 8z" fill="#1a1a1a" />
+            <path d="M0 0L10 4L0 8z" style={{ fill: C.text }} />
           </marker>
         </defs>
 
@@ -148,7 +149,7 @@ export function Diagram({
         {arrows.map((a, i) => {
           const [x1, y1] = a.from;
           const [x2, y2] = a.to;
-          const c = a.color || "#1a1a1a";
+          const c = a.color || C.text;
           const order = idx++;
 
           if (a.curved) {
@@ -179,7 +180,7 @@ export function Diagram({
                     textAnchor="middle"
                     fontSize={8}
                     fontFamily="var(--font-mono)"
-                    fill="#888"
+                    style={{ fill: C.textMuted }}
                     fontWeight="bold"
                   >
                     {a.label}
@@ -215,7 +216,7 @@ export function Diagram({
                   textAnchor="middle"
                   fontSize={8}
                   fontFamily="var(--font-mono)"
-                  fill="#888"
+                  style={{ fill: C.textMuted }}
                   fontWeight="bold"
                 >
                   {a.label}
@@ -227,7 +228,7 @@ export function Diagram({
 
         {/* Boxes */}
         {boxes.map((b, i) => {
-          const c = b.color || "#1a1a1a";
+          const c = b.color || C.text;
           const order = idx++;
           return (
             <motion.g
@@ -241,7 +242,7 @@ export function Diagram({
                 y={b.y}
                 width={b.w}
                 height={b.h}
-                fill="#fff"
+                style={{ fill: C.bgWhite }}
                 stroke={c}
                 strokeWidth={2}
                 rx={b.rounded ? 6 : 0}
@@ -265,7 +266,7 @@ export function Diagram({
 
         {/* Circles */}
         {circles.map((c, i) => {
-          const color = c.color || "#1a1a1a";
+          const color = c.color || C.text;
           const order = idx++;
           return (
             <motion.g
@@ -283,7 +284,7 @@ export function Diagram({
                 cx={c.x}
                 cy={c.y}
                 r={c.r}
-                fill="#fff"
+                style={{ fill: C.bgWhite }}
                 stroke={color}
                 strokeWidth={2}
               />
@@ -341,7 +342,7 @@ export function Diagram({
               fontSize={l.fontSize ?? 10}
               fontFamily="var(--font-mono)"
               fontWeight={l.bold ? "bold" : "normal"}
-              fill={l.color || "#1a1a1a"}
+              fill={l.color || C.text}
               initial={shouldAnimate ? { opacity: 0 } : false}
               animate={shouldAnimate ? { opacity: 1 } : undefined}
               transition={{ delay: order * 0.1, duration: 0.3 }}

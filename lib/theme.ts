@@ -1,10 +1,14 @@
-/** V5 Brutalist Archive — Design Tokens */
+/** V5 Brutalist Archive — Design Tokens (CSS Variable-backed) */
 export const C = {
-  bg: "#f0f0f0",
-  bgWhite: "#ffffff",
-  text: "#000000",
-  textMuted: "#555555",
-  red: "#ff0000",
-  border: "#000000",
-  borderLight: "#cccccc",
+  bg: "var(--c-bg)",
+  bgWhite: "var(--c-bg-white)",
+  text: "var(--c-text)",
+  textMuted: "var(--c-text-muted)",
+  red: "var(--c-red)",
+  border: "var(--c-border)",
+  borderLight: "var(--c-border-light)",
+
+  /** Inverted surface — always dark bg + light text in both modes */
+  headerBg: "var(--c-header-bg)",
+  headerText: "var(--c-header-text)",
 } as const;

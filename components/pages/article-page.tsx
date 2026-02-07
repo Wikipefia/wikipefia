@@ -243,7 +243,7 @@ export function ArticlePage({
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <span
             className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider"
-            style={{ backgroundColor: C.text, color: C.bgWhite }}
+            style={{ backgroundColor: C.headerBg, color: C.headerText }}
           >
             {entityType === "subject" ? "SUBJECT_ARTICLE" : "TEACHER_ARTICLE"}
           </span>
@@ -306,7 +306,7 @@ export function ArticlePage({
           <details className="border-2" style={{ borderColor: C.border }}>
             <summary
               className="px-4 py-2 cursor-pointer text-[10px] font-bold uppercase tracking-wider"
-              style={{ backgroundColor: C.text, color: C.bgWhite }}
+              style={{ backgroundColor: C.headerBg, color: C.headerText }}
             >
               TABLE_OF_CONTENTS [{toc.length}]
             </summary>

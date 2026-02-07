@@ -1,4 +1,5 @@
 import { Children, type ReactNode } from "react";
+import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -48,16 +49,16 @@ export function Comparison({ title, children }: ComparisonProps) {
   if (items.length === 0) return null;
 
   return (
-    <div className="mb-6 border-2 border-[#1a1a1a]">
+    <div className="mb-6 border-2" style={{ borderColor: C.border }}>
       {/* Header */}
       {title && (
         <div
-          className="px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-          style={{ backgroundColor: "#1a1a1a" }}
+          className="px-4 py-2.5 border-b-2"
+          style={{ borderColor: C.border, backgroundColor: C.headerBg }}
         >
           <span
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
-            style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
             ■ {title}
           </span>
@@ -69,7 +70,7 @@ export function Comparison({ title, children }: ComparisonProps) {
         className="grid"
         style={{
           gridTemplateColumns: `repeat(${items.length}, 1fr)`,
-          backgroundColor: "#fff",
+          backgroundColor: C.bgWhite,
         }}
       >
         {items.map((item, i) => {
@@ -81,7 +82,7 @@ export function Comparison({ title, children }: ComparisonProps) {
               key={i}
               className="px-4 py-4"
               style={{
-                borderRight: !isLast ? "1px solid #e5e5e5" : undefined,
+                borderRight: !isLast ? `1px solid ${C.borderLight}` : undefined,
               }}
             >
               {/* Column title */}
@@ -94,7 +95,7 @@ export function Comparison({ title, children }: ComparisonProps) {
                   className="text-[11px] font-bold uppercase tracking-[0.1em]"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#1a1a1a",
+                    color: C.text,
                   }}
                 >
                   {item.title}
@@ -106,7 +107,7 @@ export function Comparison({ title, children }: ComparisonProps) {
                 className="text-[13px] leading-[1.75]"
                 style={{
                   fontFamily: "var(--font-serif)",
-                  color: "#444",
+                  color: C.textMuted,
                 }}
               >
                 {item.content}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, type ReactNode } from "react";
+import { C } from "@/lib/theme";
 
 interface CodePlaygroundProps {
   language?: string;
@@ -50,16 +51,16 @@ export function CodePlayground({
   const lineCount = code.split("\n").length;
 
   return (
-    <div className="mb-6 border-2 border-[#1a1a1a]">
+    <div className="mb-6 border-2" style={{ borderColor: C.border }}>
       {/* Header */}
       <div
-        className="flex items-center justify-between px-3 py-2 border-b-2 border-[#1a1a1a]"
-        style={{ backgroundColor: "#1a1a1a" }}
+        className="flex items-center justify-between px-3 py-2 border-b-2"
+        style={{ borderColor: C.border, backgroundColor: C.headerBg }}
       >
         <div className="flex items-center gap-2">
           <span
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
-            style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
             ▶ Playground
           </span>
@@ -67,8 +68,8 @@ export function CodePlayground({
             className="text-[9px] uppercase tracking-[0.15em] px-1.5 py-0.5 border"
             style={{
               fontFamily: "var(--font-mono)",
-              color: "#888",
-              borderColor: "#444",
+              color: C.textMuted,
+              borderColor: C.borderLight,
             }}
           >
             {language}
@@ -79,11 +80,11 @@ export function CodePlayground({
           {code !== initialCode && (
             <button
               onClick={handleReset}
-              className="px-2 py-0.5 text-[9px] uppercase tracking-[0.1em] border cursor-pointer transition-colors hover:bg-[#333]"
+              className="px-2 py-0.5 text-[9px] uppercase tracking-[0.1em] border cursor-pointer transition-colors"
               style={{
                 fontFamily: "var(--font-mono)",
-                color: "#888",
-                borderColor: "#444",
+                color: C.textMuted,
+                borderColor: C.borderLight,
               }}
             >
               Reset
@@ -91,11 +92,11 @@ export function CodePlayground({
           )}
           <button
             onClick={handleCopy}
-            className="px-2 py-0.5 text-[9px] uppercase tracking-[0.1em] border cursor-pointer transition-colors hover:bg-[#333]"
+            className="px-2 py-0.5 text-[9px] uppercase tracking-[0.1em] border cursor-pointer transition-colors"
             style={{
               fontFamily: "var(--font-mono)",
-              color: copied ? "#22863a" : "#888",
-              borderColor: copied ? "#22863a" : "#444",
+              color: copied ? "#22863a" : C.textMuted,
+              borderColor: copied ? "#22863a" : C.borderLight,
             }}
           >
             {copied ? "Copied" : "Copy"}
@@ -104,7 +105,7 @@ export function CodePlayground({
       </div>
 
       {/* Code editor area */}
-      <div className="relative flex" style={{ backgroundColor: "#fafafa" }}>
+      <div className="relative flex" style={{ backgroundColor: C.bg }}>
         {/* Line numbers */}
         <div
           className="shrink-0 select-none py-3 pr-2 text-right border-r"
@@ -112,8 +113,8 @@ export function CodePlayground({
             fontFamily: "var(--font-mono)",
             fontSize: "12px",
             lineHeight: "1.6",
-            color: "#bbb",
-            borderColor: "#e5e5e5",
+            color: C.borderLight,
+            borderColor: C.borderLight,
             minWidth: "3rem",
           }}
         >
@@ -135,7 +136,7 @@ export function CodePlayground({
             fontFamily: "var(--font-mono)",
             fontSize: "12px",
             lineHeight: "1.6",
-            color: "#1a1a1a",
+            color: C.text,
             tabSize: 4,
             minHeight: `${Math.max(lineCount * 19.2 + 24, 80)}px`,
           }}
@@ -147,9 +148,9 @@ export function CodePlayground({
         className="px-3 py-1.5 border-t text-[9px] uppercase tracking-[0.15em]"
         style={{
           fontFamily: "var(--font-mono)",
-          color: "#aaa",
-          borderColor: "#e5e5e5",
-          backgroundColor: "#fafafa",
+          color: C.textMuted,
+          borderColor: C.borderLight,
+          backgroundColor: C.bg,
         }}
       >
         Editable — modify the code above to experiment

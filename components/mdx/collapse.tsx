@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { C } from "@/lib/theme";
 
 interface CollapseProps {
   title: string;
@@ -12,16 +13,19 @@ export function Collapse({ title, children }: CollapseProps) {
 
   return (
     <div
-      className="mb-6 border-2 border-[#1a1a1a]"
-      style={{ backgroundColor: open ? "#fafafa" : "#fff" }}
+      className="mb-6 border-2"
+      style={{
+        borderColor: C.border,
+        backgroundColor: open ? C.bg : C.bgWhite,
+      }}
     >
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-4 py-3 cursor-pointer text-left transition-colors hover:bg-[#f5f5f5]"
+        className="w-full flex items-center justify-between px-4 py-3 cursor-pointer text-left transition-colors"
       >
         <span
           className="text-[11px] font-bold uppercase tracking-[0.1em]"
-          style={{ fontFamily: "var(--font-mono)", color: "#1a1a1a" }}
+          style={{ fontFamily: "var(--font-mono)", color: C.text }}
         >
           {title}
         </span>
@@ -30,7 +34,7 @@ export function Collapse({ title, children }: CollapseProps) {
           style={{
             fontFamily: "var(--font-mono)",
             transform: open ? "rotate(90deg)" : "rotate(0deg)",
-            color: "#888",
+            color: C.textMuted,
           }}
         >
           ▸
@@ -39,8 +43,8 @@ export function Collapse({ title, children }: CollapseProps) {
 
       {open && (
         <div
-          className="px-4 pb-4 text-[14px] leading-[1.75] border-t-2 border-[#1a1a1a]"
-          style={{ fontFamily: "var(--font-serif)" }}
+          className="px-4 pb-4 text-[14px] leading-[1.75] border-t-2"
+          style={{ fontFamily: "var(--font-serif)", borderColor: C.border }}
         >
           {children}
         </div>

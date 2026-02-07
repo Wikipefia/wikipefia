@@ -2,6 +2,7 @@
 
 import { Children, type ReactNode, useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
+import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -103,15 +104,15 @@ export function CycleDiagram({
   const PALETTE = ["#ff0000", "#0066cc", "#22863a", "#cc6600", "#8b5cf6"];
 
   return (
-    <div ref={ref} className="mb-6 border-2 border-[#1a1a1a]">
+    <div ref={ref} className="mb-6 border-2" style={{ borderColor: C.border }}>
       {title && (
         <div
-          className="flex items-center px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-          style={{ backgroundColor: "#1a1a1a" }}
+          className="flex items-center px-4 py-2.5 border-b-2"
+          style={{ backgroundColor: C.headerBg, borderColor: C.border }}
         >
           <span
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
-            style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
             ↻ {title}
           </span>
@@ -121,7 +122,7 @@ export function CycleDiagram({
       <svg
         viewBox={`0 0 ${size} ${size}`}
         className="w-full h-auto block"
-        style={{ backgroundColor: "#fafafa" }}
+        style={{ backgroundColor: C.bg }}
       >
         <defs>
           <marker
@@ -133,7 +134,7 @@ export function CycleDiagram({
             markerHeight="5"
             orient="auto"
           >
-            <path d="M0 0L10 4L0 8z" fill="#1a1a1a" />
+            <path d="M0 0L10 4L0 8z" fill={C.text} />
           </marker>
         </defs>
 
@@ -143,7 +144,7 @@ export function CycleDiagram({
             key={`ca${i}`}
             d={d}
             fill="none"
-            stroke="#1a1a1a"
+            stroke={C.text}
             strokeWidth={1.5}
             strokeDasharray="5 3"
             markerEnd="url(#cycle-arrow)"
@@ -186,7 +187,7 @@ export function CycleDiagram({
                 cx={pos.x}
                 cy={pos.y}
                 r={nodeR}
-                fill="#fff"
+                fill={C.bgWhite}
                 stroke={c}
                 strokeWidth={2.5}
               />
@@ -217,7 +218,7 @@ export function CycleDiagram({
                     y={pos.y + nodeR + 8}
                     width={140}
                     height={28}
-                    fill="#1a1a1a"
+                    fill={C.text}
                     rx={0}
                   />
                   <text
@@ -226,7 +227,7 @@ export function CycleDiagram({
                     textAnchor="middle"
                     fontSize={7}
                     fontFamily="var(--font-mono)"
-                    fill="#fafafa"
+                    fill={C.bgWhite}
                   >
                     {node.description.length > 40
                       ? node.description.slice(0, 39) + "…"

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageShell } from "@/components/shared/page-shell";
+import { C } from "@/lib/theme";
 
 export default function NotFound() {
   return (
@@ -8,7 +9,7 @@ export default function NotFound() {
         <div className="max-w-lg">
           <div
             className="text-[10px] font-bold uppercase tracking-wider mb-6"
-            style={{ color: "#ff0000", fontFamily: "var(--font-mono)" }}
+            style={{ color: C.red, fontFamily: "var(--font-mono)" }}
           >
             // ERROR
           </div>
@@ -24,13 +25,13 @@ export default function NotFound() {
           >
             <p
               className="text-sm uppercase mb-2"
-              style={{ color: "#ff0000" }}
+              style={{ color: C.red }}
             >
               PAGE_NOT_FOUND
             </p>
             <p
               className="text-xs uppercase leading-relaxed"
-              style={{ color: "#555555" }}
+              style={{ color: C.textMuted }}
             >
               The requested resource does not exist in the database. Check the
               URL or use the search function to find what you need.
@@ -43,7 +44,7 @@ export default function NotFound() {
             <Link
               href="/"
               className="border-2 px-4 py-2 text-[10px] font-bold uppercase tracking-wider transition-colors hover:bg-black hover:text-white"
-              style={{ borderColor: "#000000" }}
+              style={{ borderColor: C.border }}
             >
               ← HOME
             </Link>

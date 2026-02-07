@@ -3,6 +3,7 @@ import { IBM_Plex_Mono, IBM_Plex_Serif } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { SearchProvider } from "@/components/search/search-provider";
+import { ThemeProvider } from "@/components/shared/theme-provider";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 
@@ -41,6 +42,10 @@ async function getSearchMeta(): Promise<{ hash: string }> {
   }
 }
 
+// Inline script to prevent flash of wrong theme on page load.
+// Runs before React hydrates, reads localStorage and applies .dark class immediately.
+const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&window.matchMedia("(prefers-color-scheme:dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})()`;
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -51,14 +56,19 @@ export default async function RootLayout({
   const searchMeta = await getSearchMeta();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body
         className={`${plexMono.variable} ${plexSerif.variable} antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
-          <SearchProvider locale={locale} searchMeta={searchMeta}>
-            {children}
-          </SearchProvider>
+          <ThemeProvider>
+            <SearchProvider locale={locale} searchMeta={searchMeta}>
+              {children}
+            </SearchProvider>
+          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>

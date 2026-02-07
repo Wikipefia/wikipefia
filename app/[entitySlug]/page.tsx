@@ -100,7 +100,7 @@ export default async function EntityPage({ params }: Props) {
           <div className="mb-8">
             <span
               className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider"
-              style={{ backgroundColor: "#ff0000", color: "#fafafa" }}
+              style={{ backgroundColor: C.red, color: C.headerText }}
             >
               SYSTEM_ARTICLE
             </span>
@@ -113,13 +113,13 @@ export default async function EntityPage({ params }: Props) {
             {sysArticle.config.description && (
               <p
                 className="text-sm uppercase mt-4"
-                style={{ color: "#888888" }}
+                style={{ color: C.textMuted }}
               >
                 {localized(sysArticle.config.description, locale)}
               </p>
             )}
           </div>
-          <div style={{ borderTop: "2px solid #1a1a1a" }} className="pt-6">
+          <div style={{ borderTop: `2px solid ${C.border}` }} className="pt-6">
             {compiledSource && (
               <MDXRenderer compiledSource={compiledSource} />
             )}

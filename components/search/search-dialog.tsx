@@ -85,7 +85,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
             {/* Header */}
             <div
               className="px-4 py-2 flex items-center justify-between"
-              style={{ backgroundColor: C.text, color: C.bgWhite }}
+              style={{ backgroundColor: C.headerBg, color: C.headerText }}
             >
               <span className="text-xs font-bold uppercase tracking-wider">
                 SEARCH_QUERY
@@ -140,8 +140,8 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                       style={{
                         borderColor: C.borderLight,
                         backgroundColor:
-                          i === selectedIdx ? C.text : "transparent",
-                        color: i === selectedIdx ? C.bgWhite : C.text,
+                          i === selectedIdx ? C.headerBg : "transparent",
+                        color: i === selectedIdx ? C.headerText : C.text,
                       }}
                       onMouseEnter={() => setSelectedIdx(i)}
                     >
@@ -151,7 +151,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                           style={{
                             color:
                               i === selectedIdx
-                                ? C.bgWhite
+                                ? C.headerText
                                 : TYPE_COLORS[entry.type] || C.red,
                           }}
                         >

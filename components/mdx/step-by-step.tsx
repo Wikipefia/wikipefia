@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Children, type ReactNode } from "react";
+import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -43,28 +44,28 @@ export function StepByStep({ title, children }: StepByStepProps) {
   if (total === 0) return null;
 
   return (
-    <div className="mb-6 border-2 border-[#1a1a1a]">
+    <div className="mb-6 border-2" style={{ borderColor: C.border }}>
       {/* Header */}
       <div
-        className="flex items-center justify-between px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-        style={{ backgroundColor: "#1a1a1a" }}
+        className="flex items-center justify-between px-4 py-2.5 border-b-2"
+        style={{ borderColor: C.border, backgroundColor: C.headerBg }}
       >
         <span
           className="text-[10px] font-bold uppercase tracking-[0.15em]"
-          style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+          style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
         >
           ■ {title || "Step by Step"}
         </span>
         <span
           className="text-[10px] font-bold tracking-[0.1em]"
-          style={{ fontFamily: "var(--font-mono)", color: "#888" }}
+          style={{ fontFamily: "var(--font-mono)", color: C.textMuted }}
         >
           {revealed}/{total}
         </span>
       </div>
 
       {/* Steps */}
-      <div className="px-4 py-3" style={{ backgroundColor: "#fff" }}>
+      <div className="px-4 py-3" style={{ backgroundColor: C.bgWhite }}>
         {steps.map((step, i) => {
           const isVisible = i < revealed;
           const isCurrent = i === revealed - 1;
@@ -85,15 +86,15 @@ export function StepByStep({ title, children }: StepByStepProps) {
                   style={{
                     fontFamily: "var(--font-mono)",
                     backgroundColor: isCurrent
-                      ? "#1a1a1a"
+                      ? C.headerBg
                       : isVisible
-                        ? "#e5e5e5"
-                        : "#f5f5f5",
+                        ? C.borderLight
+                        : C.bg,
                     color: isCurrent
-                      ? "#fafafa"
+                      ? C.headerText
                       : isVisible
-                        ? "#1a1a1a"
-                        : "#ccc",
+                        ? C.text
+                        : C.borderLight,
                   }}
                 >
                   {i + 1}
@@ -102,7 +103,7 @@ export function StepByStep({ title, children }: StepByStepProps) {
                   <div
                     className="w-px flex-1 min-h-3"
                     style={{
-                      backgroundColor: isVisible ? "#e5e5e5" : "#f0f0f0",
+                      backgroundColor: isVisible ? C.borderLight : C.bg,
                     }}
                   />
                 )}
@@ -114,7 +115,7 @@ export function StepByStep({ title, children }: StepByStepProps) {
                   className="text-[11px] font-bold uppercase tracking-[0.08em] mb-1.5 flex items-center gap-2"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: isVisible ? "#1a1a1a" : "#ccc",
+                    color: isVisible ? C.text : C.borderLight,
                   }}
                 >
                   {step.title}
@@ -122,7 +123,7 @@ export function StepByStep({ title, children }: StepByStepProps) {
                     <span
                       className="text-[8px] px-1.5 py-0.5 uppercase tracking-[0.1em]"
                       style={{
-                        backgroundColor: "#ff0000",
+                        backgroundColor: C.red,
                         color: "#fff",
                         fontFamily: "var(--font-mono)",
                       }}
@@ -136,7 +137,7 @@ export function StepByStep({ title, children }: StepByStepProps) {
                     className="text-[13px] leading-[1.75]"
                     style={{
                       fontFamily: "var(--font-serif)",
-                      color: "#555",
+                      color: C.textMuted,
                     }}
                   >
                     {step.content}
@@ -150,17 +151,17 @@ export function StepByStep({ title, children }: StepByStepProps) {
 
       {/* Navigation footer */}
       <div
-        className="flex items-center justify-between px-4 py-2.5 border-t-2 border-[#e5e5e5]"
-        style={{ backgroundColor: "#fafafa" }}
+        className="flex items-center justify-between px-4 py-2.5 border-t-2"
+        style={{ borderColor: C.borderLight, backgroundColor: C.bg }}
       >
         <button
           onClick={() => setRevealed((r) => Math.max(1, r - 1))}
           disabled={revealed <= 1}
-          className="px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] border-2 cursor-pointer transition-colors disabled:opacity-25 disabled:cursor-not-allowed hover:enabled:bg-[#f0f0f0]"
+          className="px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] border-2 cursor-pointer transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
           style={{
             fontFamily: "var(--font-mono)",
-            borderColor: "#1a1a1a",
-            color: "#1a1a1a",
+            borderColor: C.border,
+            color: C.text,
           }}
         >
           ◄ Back
@@ -174,7 +175,7 @@ export function StepByStep({ title, children }: StepByStepProps) {
               className="block w-1.5 h-1.5"
               style={{
                 backgroundColor:
-                  i < revealed ? "#1a1a1a" : "#ddd",
+                  i < revealed ? C.text : C.borderLight,
                 transition: "background-color 0.3s ease",
               }}
             />
@@ -184,12 +185,12 @@ export function StepByStep({ title, children }: StepByStepProps) {
         {revealed < total ? (
           <button
             onClick={() => setRevealed((r) => Math.min(total, r + 1))}
-            className="px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] border-2 cursor-pointer transition-colors hover:bg-[#f5f5f5]"
+            className="px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] border-2 cursor-pointer transition-colors"
             style={{
               fontFamily: "var(--font-mono)",
-              borderColor: "#1a1a1a",
-              backgroundColor: "#1a1a1a",
-              color: "#fafafa",
+              borderColor: C.border,
+              backgroundColor: C.headerBg,
+              color: C.headerText,
             }}
           >
             Next ►
@@ -197,11 +198,11 @@ export function StepByStep({ title, children }: StepByStepProps) {
         ) : (
           <button
             onClick={() => setRevealed(1)}
-            className="px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] border-2 cursor-pointer transition-colors hover:bg-[#f0f0f0]"
+            className="px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] border-2 cursor-pointer transition-colors"
             style={{
               fontFamily: "var(--font-mono)",
-              borderColor: "#1a1a1a",
-              color: "#1a1a1a",
+              borderColor: C.border,
+              color: C.text,
             }}
           >
             Reset

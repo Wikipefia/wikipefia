@@ -5,9 +5,72 @@
   --color-foreground: var(--foreground);
 }
 
+/* ── Light Theme (default) ── */
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
+
+  /* Design tokens */
+  --c-bg: #f0f0f0;
+  --c-bg-white: #ffffff;
+  --c-text: #000000;
+  --c-text-muted: #555555;
+  --c-red: #ff0000;
+  --c-border: #000000;
+  --c-border-light: #cccccc;
+
+  /* Inverted surface (header bars, badges) — always dark bg, light text */
+  --c-header-bg: #0a0a0a;
+  --c-header-text: #fafafa;
+
+  /* Hover invert */
+  --c-hover-bg: #000000;
+  --c-hover-text: #ffffff;
+
+  /* MDX content colors */
+  --c-content-text: #333333;
+  --c-content-heading: #000000;
+  --c-content-link: #0066cc;
+  --c-content-code-bg: #f5f5f5;
+  --c-content-code-border: #e0e0e0;
+  --c-content-hr: #cccccc;
+  --c-content-blockquote-border: #cccccc;
+  --c-content-blockquote-bg: rgba(0, 0, 0, 0.02);
+}
+
+/* ── Dark Theme ── */
+.dark {
+  --background: #0e0e0e;
+  --foreground: #d4d4d4;
+
+  /* Design tokens */
+  --c-bg: #111111;
+  --c-bg-white: #191919;
+  --c-text: #d4d4d4;
+  --c-text-muted: #707070;
+  --c-red: #ff3333;
+  --c-border: #2e2e2e;
+  --c-border-light: #1e1e1e;
+
+  /* Inverted surface — stays dark in dark mode (slightly elevated) */
+  --c-header-bg: #1c1c1c;
+  --c-header-text: #d4d4d4;
+
+  /* Hover invert */
+  --c-hover-bg: #ffffff;
+  --c-hover-text: #000000;
+
+  /* MDX content colors */
+  --c-content-text: #b8b8b8;
+  --c-content-heading: #d4d4d4;
+  --c-content-link: #5599ee;
+  --c-content-code-bg: #1a1a1a;
+  --c-content-code-border: #2a2a2a;
+  --c-content-hr: #2a2a2a;
+  --c-content-blockquote-border: #2e2e2e;
+  --c-content-blockquote-bg: rgba(255, 255, 255, 0.02);
+
+  color-scheme: dark;
 }
 
 * {
@@ -19,7 +82,75 @@ body {
   color: var(--foreground);
 }
 
-/* Noise texture utility */
+/* ── Dark mode: flip hover:bg-black / hover:text-white utilities ── */
+.dark .hover\:bg-black:hover {
+  background-color: var(--c-hover-bg) !important;
+  color: var(--c-hover-text) !important;
+}
+.dark .hover\:text-white:hover {
+  color: var(--c-hover-text) !important;
+}
+.dark .hover\:text-\[\#ff0000\]:hover {
+  color: var(--c-red) !important;
+}
+
+/* ── Dark mode: MDX prose content ── */
+.dark .prose-wiki {
+  color: var(--c-content-text);
+}
+
+.dark .prose-wiki h1,
+.dark .prose-wiki h2,
+.dark .prose-wiki h3,
+.dark .prose-wiki h4,
+.dark .prose-wiki h5,
+.dark .prose-wiki h6 {
+  color: var(--c-content-heading);
+}
+
+.dark .prose-wiki a {
+  color: var(--c-content-link);
+}
+
+.dark .prose-wiki code {
+  background-color: var(--c-content-code-bg);
+  border-color: var(--c-content-code-border);
+  color: var(--c-content-text);
+}
+
+.dark .prose-wiki pre {
+  background-color: var(--c-content-code-bg) !important;
+  border-color: var(--c-content-code-border);
+}
+
+.dark .prose-wiki hr {
+  border-color: var(--c-content-hr);
+}
+
+.dark .prose-wiki blockquote {
+  border-left-color: var(--c-content-blockquote-border);
+  background-color: var(--c-content-blockquote-bg);
+}
+
+.dark .prose-wiki table th {
+  background-color: var(--c-header-bg);
+  color: var(--c-header-text);
+}
+
+.dark .prose-wiki table td {
+  border-color: var(--c-border-light);
+}
+
+.dark .prose-wiki img {
+  opacity: 0.9;
+}
+
+/* ── Dark mode: KaTeX math ── */
+.dark .katex {
+  color: var(--c-text);
+}
+
+/* ── Noise texture utility ── */
 .noise-overlay::after {
   content: "";
   position: absolute;
@@ -30,7 +161,7 @@ body {
   background-size: 128px 128px;
 }
 
-/* Scanline utility */
+/* ── Scanline utility ── */
 .scanlines::before {
   content: "";
   position: absolute;
@@ -46,7 +177,17 @@ body {
   z-index: 10;
 }
 
-/* Grain overlay with animation */
+.dark .scanlines::before {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.02) 2px,
+    rgba(255, 255, 255, 0.02) 4px
+  );
+}
+
+/* ── Grain overlay with animation ── */
 @keyframes grain {
   0%, 100% { transform: translate(0, 0); }
   10% { transform: translate(-5%, -10%); }
@@ -67,4 +208,14 @@ body {
   animation: grain 8s steps(10) infinite;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   z-index: 100;
+}
+
+/* ── Theme toggle animation ── */
+@keyframes theme-toggle-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(180deg); }
+}
+
+.theme-toggle-icon {
+  animation: theme-toggle-spin 0.3s ease-out;
 }

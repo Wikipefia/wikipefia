@@ -5,6 +5,7 @@ import Link from "next/link";
 import { C } from "@/lib/theme";
 import { SearchDialog } from "@/components/search/search-dialog";
 import { LocaleSwitcher } from "@/components/navigation/locale-switcher";
+import { useTheme } from "@/components/shared/theme-provider";
 
 // ── Types ──────────────────────────────────────────────
 
@@ -17,6 +18,39 @@ interface PageShellProps {
   children: React.ReactNode;
   breadcrumbs?: BreadcrumbItem[];
   locale: string;
+}
+
+// ── Theme Toggle ──────────────────────────────────────
+
+function ThemeToggle() {
+  const { resolvedTheme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  // Avoid hydration mismatch - render nothing until mounted
+  if (!mounted) {
+    return (
+      <div
+        className="w-8 h-8 border-2 flex items-center justify-center"
+        style={{ borderColor: C.border }}
+      />
+    );
+  }
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className="w-8 h-8 border-2 flex items-center justify-center cursor-pointer transition-colors hover:bg-black hover:text-white"
+      style={{ borderColor: C.border }}
+      title={resolvedTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={resolvedTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+    >
+      <span className="text-xs font-bold theme-toggle-icon" key={resolvedTheme}>
+        {resolvedTheme === "dark" ? "☀" : "●"}
+      </span>
+    </button>
+  );
 }
 
 // ── PageShell ──────────────────────────────────────────
@@ -71,6 +105,7 @@ export function PageShell({ children, breadcrumbs, locale }: PageShellProps) {
                   ⌘K
                 </span>
               </button>
+              <ThemeToggle />
               <LocaleSwitcher currentLocale={locale} />
             </div>
           </div>

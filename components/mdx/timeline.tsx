@@ -1,4 +1,5 @@
 import { Children, type ReactNode } from "react";
+import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -48,16 +49,16 @@ export function Timeline({ title, children }: TimelineProps) {
   if (events.length === 0) return null;
 
   return (
-    <div className="mb-6 border-2 border-[#1a1a1a]">
+    <div className="mb-6 border-2" style={{ borderColor: C.border }}>
       {/* Header */}
       {title && (
         <div
-          className="px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-          style={{ backgroundColor: "#1a1a1a" }}
+          className="px-4 py-2.5 border-b-2"
+          style={{ borderColor: C.border, backgroundColor: C.headerBg }}
         >
           <span
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
-            style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
             ■ {title}
           </span>
@@ -65,10 +66,10 @@ export function Timeline({ title, children }: TimelineProps) {
       )}
 
       {/* Events */}
-      <div className="px-4 py-4" style={{ backgroundColor: "#fff" }}>
+      <div className="px-4 py-4" style={{ backgroundColor: C.bgWhite }}>
         {events.map((ev, i) => {
           const isLast = i === events.length - 1;
-          const dotColor = ev.color || "#ff0000";
+          const dotColor = ev.color || C.red;
 
           return (
             <div key={i} className="flex gap-4">
@@ -79,7 +80,7 @@ export function Timeline({ title, children }: TimelineProps) {
               >
                 <span
                   className="text-[11px] font-bold tabular-nums"
-                  style={{ color: "#1a1a1a" }}
+                  style={{ color: C.text }}
                 >
                   {ev.date}
                 </span>
@@ -99,7 +100,7 @@ export function Timeline({ title, children }: TimelineProps) {
                 {!isLast && (
                   <div
                     className="w-px flex-1 min-h-6"
-                    style={{ backgroundColor: "#e5e5e5" }}
+                    style={{ backgroundColor: C.borderLight }}
                   />
                 )}
               </div>
@@ -110,7 +111,7 @@ export function Timeline({ title, children }: TimelineProps) {
                   className="text-[12px] font-bold uppercase tracking-[0.08em] mb-1"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#1a1a1a",
+                    color: C.text,
                   }}
                 >
                   {ev.title}
@@ -120,7 +121,7 @@ export function Timeline({ title, children }: TimelineProps) {
                     className="text-[13px] leading-[1.7]"
                     style={{
                       fontFamily: "var(--font-serif)",
-                      color: "#555",
+                      color: C.textMuted,
                     }}
                   >
                     {ev.content}

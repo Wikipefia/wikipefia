@@ -2,6 +2,7 @@
 
 import { useState, Children, type ReactNode } from "react";
 import { safeEval } from "@/lib/math/safe-eval";
+import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyElement = { props: Record<string, any> };
@@ -372,16 +373,16 @@ export function Graph({
 
   /* ── Render ── */
   return (
-    <div className="mb-6 border-2 border-[#1a1a1a]">
+    <div className="mb-6 border-2" style={{ borderColor: C.border }}>
       {/* ── Header bar ── */}
       {title && (
         <div
-          className="flex items-center justify-between px-4 py-2.5 border-b-2 border-[#1a1a1a]"
-          style={{ backgroundColor: "#1a1a1a" }}
+          className="flex items-center justify-between px-4 py-2.5 border-b-2"
+          style={{ backgroundColor: C.headerBg, borderColor: C.border }}
         >
           <span
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
-            style={{ fontFamily: "var(--font-mono)", color: "#fafafa" }}
+            style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
             ■ {title}
           </span>
@@ -406,7 +407,7 @@ export function Graph({
                     className="text-[9px] uppercase tracking-[0.1em]"
                     style={{
                       fontFamily: "var(--font-mono)",
-                      color: "#888",
+                      color: C.textMuted,
                     }}
                   >
                     {p.label}
@@ -422,7 +423,7 @@ export function Graph({
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="w-full h-auto block select-none"
-        style={{ backgroundColor: "#fafafa" }}
+        style={{ backgroundColor: C.bg }}
         aria-label={title || "Mathematical graph"}
       >
         <defs>
@@ -560,7 +561,7 @@ export function Graph({
                   y1={py}
                   x2={pad.left + pW}
                   y2={py}
-                  stroke={h.color || "#999"}
+                  stroke={h.color || C.textMuted}
                   strokeWidth={1}
                   strokeDasharray={h.dashed !== false ? "6 3" : undefined}
                 />
@@ -571,7 +572,7 @@ export function Graph({
                     fontSize={8}
                     fontFamily="var(--font-mono)"
                     fontWeight="bold"
-                    fill={h.color || "#999"}
+                    fill={h.color || C.textMuted}
                   >
                     {h.label}
                   </text>
@@ -592,7 +593,7 @@ export function Graph({
                   y1={pad.top}
                   x2={px}
                   y2={pad.top + pH}
-                  stroke={v.color || "#999"}
+                  stroke={v.color || C.textMuted}
                   strokeWidth={1}
                   strokeDasharray={v.dashed !== false ? "6 3" : undefined}
                 />
@@ -604,7 +605,7 @@ export function Graph({
                     fontSize={8}
                     fontFamily="var(--font-mono)"
                     fontWeight="bold"
-                    fill={v.color || "#999"}
+                    fill={v.color || C.textMuted}
                   >
                     {v.label}
                   </text>
@@ -620,7 +621,7 @@ export function Graph({
             if (!isFinite(xv) || !isFinite(yv)) return null;
             const px = toX(xv);
             const py = toY(yv);
-            const c = pt.color || "#1a1a1a";
+            const c = pt.color || C.text;
             return (
               <g key={`pt${i}`}>
                 {pt.showYLine && (
@@ -672,7 +673,7 @@ export function Graph({
           width={pW}
           height={pH}
           fill="none"
-          stroke="#1a1a1a"
+          stroke={C.text}
           strokeWidth={2}
         />
 
@@ -685,7 +686,7 @@ export function Graph({
             textAnchor="middle"
             fontSize={9}
             fontFamily="var(--font-mono)"
-            fill="#999"
+            fill={C.textMuted}
           >
             {fmtNum(v)}
           </text>
@@ -700,7 +701,7 @@ export function Graph({
             textAnchor="end"
             fontSize={9}
             fontFamily="var(--font-mono)"
-            fill="#999"
+            fill={C.textMuted}
           >
             {fmtNum(v)}
           </text>
@@ -714,7 +715,7 @@ export function Graph({
             textAnchor="middle"
             fontSize={10}
             fontFamily="var(--font-mono)"
-            fill="#555"
+            fill={C.textMuted}
             fontWeight="bold"
           >
             {xLabel.toUpperCase()}
@@ -729,7 +730,7 @@ export function Graph({
             textAnchor="middle"
             fontSize={10}
             fontFamily="var(--font-mono)"
-            fill="#555"
+            fill={C.textMuted}
             fontWeight="bold"
             transform={`rotate(-90 14 ${pad.top + pH / 2})`}
           >
@@ -741,8 +742,8 @@ export function Graph({
       {/* ── Sliders ── */}
       {sliderDefs.length > 0 && (
         <div
-          className="px-4 py-3 border-t-2 border-[#e5e5e5] space-y-3"
-          style={{ backgroundColor: "#fff" }}
+          className="px-4 py-3 border-t-2 space-y-3"
+          style={{ backgroundColor: C.bgWhite, borderColor: C.borderLight }}
         >
           {sliderDefs.map((s) => {
             const val = vars[s.name] ?? s.default ?? 0;
@@ -755,7 +756,7 @@ export function Graph({
                   className="shrink-0 text-[10px] font-bold uppercase tracking-[0.1em] min-w-24"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#1a1a1a",
+                    color: C.text,
                   }}
                 >
                   {s.label || s.name}
@@ -778,7 +779,7 @@ export function Graph({
                   className="shrink-0 text-[11px] font-bold tabular-nums w-14 text-right"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: "#ff0000",
+                    color: C.red,
                   }}
                 >
                   {val.toFixed(decimals)}
