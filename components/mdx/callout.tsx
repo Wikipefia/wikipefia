@@ -1,4 +1,7 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { C } from "@/lib/theme";
 
 type CalloutType = "info" | "warning" | "error";
@@ -10,37 +13,39 @@ interface CalloutProps {
 
 const config: Record<
   CalloutType,
-  { label: string; border: string; bg: string; icon: string; accent: string }
+  { border: string; bg: string; icon: string; accent: string; key: string }
 > = {
   info: {
-    label: "NOTE",
-    border: "#0066cc",
-    bg: "rgba(0, 102, 204, 0.04)",
+    border: "#2563EB",
+    bg: "rgba(37, 99, 235, 0.05)",
     icon: "ℹ",
-    accent: "#0066cc",
+    accent: "#2563EB",
+    key: "note",
   },
   warning: {
-    label: "WARNING",
-    border: "#cc6600",
-    bg: "rgba(204, 102, 0, 0.04)",
+    border: "#D97706",
+    bg: "rgba(217, 119, 6, 0.05)",
     icon: "▲",
-    accent: "#cc6600",
+    accent: "#D97706",
+    key: "warning",
   },
   error: {
-    label: "DANGER",
-    border: "#cc0000",
-    bg: "rgba(204, 0, 0, 0.04)",
+    border: "#DC2626",
+    bg: "rgba(220, 38, 38, 0.05)",
     icon: "✕",
-    accent: "#cc0000",
+    accent: "#DC2626",
+    key: "danger",
   },
 };
 
 export function Callout({ type = "info", children }: CalloutProps) {
+  const t = useTranslations("common");
   const c = config[type] || config.info;
+  const label = t(c.key);
 
   return (
     <aside
-      className="mb-6 relative"
+      className="pb-1 mb-6"
       style={{
         borderLeft: `4px solid ${c.border}`,
         backgroundColor: c.bg,
@@ -48,20 +53,21 @@ export function Callout({ type = "info", children }: CalloutProps) {
     >
       {/* Label strip */}
       <div
-        className="flex items-center gap-1.5 px-4 pt-3 pb-0"
+        className="flex items-center gap-2 px-4 pt-3"
         style={{ color: c.accent }}
       >
+        <span className="text-lg leading-none">{c.icon}</span>
         <span
-          className="text-[10px] font-bold tracking-[0.15em] uppercase"
+          className="text-[11px] font-bold tracking-[0.15em] uppercase"
           style={{ fontFamily: "var(--font-mono)" }}
         >
-          {c.icon} {c.label}
+          {label}
         </span>
       </div>
 
       {/* Content */}
       <div
-        className="px-4 pt-2 pb-3 text-[14px] leading-[1.75]"
+        className="px-4 pt-2 text-[15px] leading-[1.75]"
         style={{ color: C.text, fontFamily: "var(--font-serif)" }}
       >
         {children}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Children, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { safeEval } from "@/lib/math/safe-eval";
 import { C } from "@/lib/theme";
 
@@ -64,6 +65,7 @@ interface InteractiveProps {
 }
 
 export function Interactive({ title, children }: InteractiveProps) {
+  const t = useTranslations("common");
   /* ── Extract children ── */
   const sliderDefs: SliderDef[] = [];
   const toggleDefs: ToggleProps[] = [];
@@ -117,14 +119,14 @@ export function Interactive({ title, children }: InteractiveProps) {
           className="text-[10px] font-bold uppercase tracking-[0.15em]"
           style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
         >
-          ▣ {title || "Interactive"}
+          ▣ {title || t("interactive")}
         </span>
         <span
           className="text-[9px] uppercase tracking-[0.1em]"
           style={{ fontFamily: "var(--font-mono)", color: C.textMuted }}
         >
-          {sliderDefs.length + toggleDefs.length} control
-          {sliderDefs.length + toggleDefs.length !== 1 ? "s" : ""}
+          {sliderDefs.length + toggleDefs.length}{" "}
+          {sliderDefs.length + toggleDefs.length !== 1 ? t("controls") : t("control")}
         </span>
       </div>
 
@@ -163,13 +165,13 @@ export function Interactive({ title, children }: InteractiveProps) {
                       [s.name]: parseFloat(e.target.value),
                     }))
                   }
-                  className="flex-1 h-1.5 cursor-pointer accent-[#ff0000]"
+                  className="flex-1 h-1.5 cursor-pointer accent-blue-600"
                 />
                 <span
                   className="shrink-0 text-[11px] font-bold tabular-nums w-16 text-right"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: C.red,
+                    color: C.accent,
                   }}
                 >
                   {val.toFixed(decimals)}
@@ -179,11 +181,11 @@ export function Interactive({ title, children }: InteractiveProps) {
           })}
 
           {/* Toggles */}
-          {toggleDefs.map((t) => {
-            const isOn = !!(vars[t.name] ?? 0);
+          {toggleDefs.map((toggle) => {
+            const isOn = !!(vars[toggle.name] ?? 0);
 
             return (
-              <div key={t.name} className="flex items-center gap-3">
+              <div key={toggle.name} className="flex items-center gap-3">
                 <span
                   className="shrink-0 text-[10px] font-bold uppercase tracking-[0.1em] min-w-28"
                   style={{
@@ -191,13 +193,13 @@ export function Interactive({ title, children }: InteractiveProps) {
                     color: C.text,
                   }}
                 >
-                  {t.label || t.name}
+                  {toggle.label || toggle.name}
                 </span>
                 <button
                   onClick={() =>
                     setVars((p) => ({
                       ...p,
-                      [t.name]: p[t.name] ? 0 : 1,
+                      [toggle.name]: p[toggle.name] ? 0 : 1,
                     }))
                   }
                   className="flex items-center gap-1.5 px-2.5 py-1 border-2 cursor-pointer transition-colors text-[10px] font-bold uppercase tracking-[0.1em]"
@@ -211,10 +213,10 @@ export function Interactive({ title, children }: InteractiveProps) {
                   <span
                     className="inline-block w-2 h-2"
                     style={{
-                      backgroundColor: isOn ? C.red : C.borderLight,
+                      backgroundColor: isOn ? C.accent : C.borderLight,
                     }}
                   />
-                  {isOn ? "On" : "Off"}
+                  {isOn ? t("on") : t("off")}
                 </button>
               </div>
             );

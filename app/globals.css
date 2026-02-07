@@ -7,34 +7,30 @@
 
 /* ── Light Theme (default) ── */
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  --background: #fafafa;
+  --foreground: #111111;
 
   /* Design tokens */
-  --c-bg: #f0f0f0;
+  --c-bg: #f5f5f4;
   --c-bg-white: #ffffff;
-  --c-text: #000000;
-  --c-text-muted: #555555;
-  --c-red: #ff0000;
-  --c-border: #000000;
-  --c-border-light: #cccccc;
+  --c-text: #1a1a1a;
+  --c-text-muted: #6b6b6b;
+  --c-accent: #2563EB;
+  --c-border: #d4d4d4;
+  --c-border-light: #e5e5e5;
 
-  /* Inverted surface (header bars, badges) — always dark bg, light text */
-  --c-header-bg: #0a0a0a;
+  /* Inverted surface (header bars, badges) */
+  --c-header-bg: #1a1a1a;
   --c-header-text: #fafafa;
-
-  /* Hover invert */
-  --c-hover-bg: #000000;
-  --c-hover-text: #ffffff;
 
   /* MDX content colors */
   --c-content-text: #333333;
-  --c-content-heading: #000000;
-  --c-content-link: #0066cc;
+  --c-content-heading: #111111;
+  --c-content-link: #2563EB;
   --c-content-code-bg: #f5f5f5;
-  --c-content-code-border: #e0e0e0;
-  --c-content-hr: #cccccc;
-  --c-content-blockquote-border: #cccccc;
+  --c-content-code-border: #e5e5e5;
+  --c-content-hr: #d4d4d4;
+  --c-content-blockquote-border: #d4d4d4;
   --c-content-blockquote-bg: rgba(0, 0, 0, 0.02);
 }
 
@@ -44,30 +40,26 @@
   --foreground: #d4d4d4;
 
   /* Design tokens */
-  --c-bg: #111111;
-  --c-bg-white: #191919;
+  --c-bg: #141414;
+  --c-bg-white: #1a1a1a;
   --c-text: #d4d4d4;
-  --c-text-muted: #707070;
-  --c-red: #ff3333;
-  --c-border: #2e2e2e;
-  --c-border-light: #1e1e1e;
+  --c-text-muted: #777777;
+  --c-accent: #60A5FA;
+  --c-border: #333333;
+  --c-border-light: #252525;
 
-  /* Inverted surface — stays dark in dark mode (slightly elevated) */
-  --c-header-bg: #1c1c1c;
+  /* Inverted surface */
+  --c-header-bg: #1e1e1e;
   --c-header-text: #d4d4d4;
-
-  /* Hover invert */
-  --c-hover-bg: #ffffff;
-  --c-hover-text: #000000;
 
   /* MDX content colors */
   --c-content-text: #b8b8b8;
   --c-content-heading: #d4d4d4;
-  --c-content-link: #5599ee;
+  --c-content-link: #60A5FA;
   --c-content-code-bg: #1a1a1a;
   --c-content-code-border: #2a2a2a;
   --c-content-hr: #2a2a2a;
-  --c-content-blockquote-border: #2e2e2e;
+  --c-content-blockquote-border: #333333;
   --c-content-blockquote-bg: rgba(255, 255, 255, 0.02);
 
   color-scheme: dark;
@@ -80,18 +72,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-}
-
-/* ── Dark mode: flip hover:bg-black / hover:text-white utilities ── */
-.dark .hover\:bg-black:hover {
-  background-color: var(--c-hover-bg) !important;
-  color: var(--c-hover-text) !important;
-}
-.dark .hover\:text-white:hover {
-  color: var(--c-hover-text) !important;
-}
-.dark .hover\:text-\[\#ff0000\]:hover {
-  color: var(--c-red) !important;
 }
 
 /* ── Dark mode: MDX prose content ── */
@@ -161,32 +141,6 @@ body {
   background-size: 128px 128px;
 }
 
-/* ── Scanline utility ── */
-.scanlines::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.03) 2px,
-    rgba(0, 0, 0, 0.03) 4px
-  );
-  z-index: 10;
-}
-
-.dark .scanlines::before {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(255, 255, 255, 0.02) 2px,
-    rgba(255, 255, 255, 0.02) 4px
-  );
-}
-
 /* ── Grain overlay with animation ── */
 @keyframes grain {
   0%, 100% { transform: translate(0, 0); }
@@ -204,7 +158,7 @@ body {
   width: 200%;
   height: 200%;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: 0.025;
   animation: grain 8s steps(10) infinite;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   z-index: 100;

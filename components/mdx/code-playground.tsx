@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { C } from "@/lib/theme";
 
 interface CodePlaygroundProps {
@@ -33,6 +34,7 @@ export function CodePlayground({
   const [code, setCode] = useState(initialCode);
   const [copied, setCopied] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const t = useTranslations("common");
 
   const handleCopy = async () => {
     try {
@@ -62,7 +64,7 @@ export function CodePlayground({
             className="text-[10px] font-bold uppercase tracking-[0.15em]"
             style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
-            ▶ Playground
+            {t("playground")}
           </span>
           <span
             className="text-[9px] uppercase tracking-[0.15em] px-1.5 py-0.5 border"
@@ -87,7 +89,7 @@ export function CodePlayground({
                 borderColor: C.borderLight,
               }}
             >
-              Reset
+              {t("reset")}
             </button>
           )}
           <button
@@ -99,7 +101,7 @@ export function CodePlayground({
               borderColor: copied ? "#22863a" : C.borderLight,
             }}
           >
-            {copied ? "Copied" : "Copy"}
+            {copied ? t("copied") : t("copy")}
           </button>
         </div>
       </div>
@@ -153,7 +155,7 @@ export function CodePlayground({
           backgroundColor: C.bg,
         }}
       >
-        Editable — modify the code above to experiment
+        {t("editableHint")}
       </div>
     </div>
   );

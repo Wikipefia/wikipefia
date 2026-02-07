@@ -69,7 +69,7 @@ export function Timeline({ title, children }: TimelineProps) {
       <div className="px-4 py-4" style={{ backgroundColor: C.bgWhite }}>
         {events.map((ev, i) => {
           const isLast = i === events.length - 1;
-          const dotColor = ev.color || C.red;
+          const dotColor = ev.color || C.accent;
 
           return (
             <div key={i} className="flex gap-4">

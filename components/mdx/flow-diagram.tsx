@@ -232,7 +232,7 @@ export function FlowDiagram({
           const pos = positions[i];
           const x = padX + pos.x;
           const y = padY + pos.y;
-          const c = n.color || (n.highlight ? C.red : C.text);
+          const c = n.color || (n.highlight ? C.accent : C.text);
 
           return (
             <motion.g

@@ -5,7 +5,7 @@ import { C } from "@/lib/theme";
 type AnyElement = { props: Record<string, any> };
 
 /* ── Default accent colors ── */
-const ACCENTS = ["#ff0000", "#0066cc", "#22863a", "#cc6600", "#8b5cf6"];
+const ACCENTS = ["#2563EB", "#059669", "#D97706", "#7C3AED", "#0891B2"];
 
 /* ── Data carrier ── */
 

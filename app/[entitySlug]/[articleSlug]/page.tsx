@@ -62,6 +62,9 @@ export default async function ArticleRoute({ params }: Props) {
   let article;
   let parentName: string;
   let entityType: "subject" | "teacher";
+  let siblingArticles: Array<{ slug: string; title: string; category?: string }> = [];
+  let prevArticle: { slug: string; title: string } | null = null;
+  let nextArticle: { slug: string; title: string } | null = null;
 
   if (entityInfo.type === "subject") {
     const subject = manifest.subjects[entitySlug];
@@ -69,12 +72,54 @@ export default async function ArticleRoute({ params }: Props) {
     article = subject.articles[articleSlug];
     parentName = localized(subject.config.name, locale);
     entityType = "subject";
+
+    // Build ordered article list from categories
+    const orderedArticles: Array<{ slug: string; title: string; category: string }> = [];
+    for (const cat of subject.config.categories) {
+      for (const slug of cat.articles) {
+        const a = subject.articles[slug];
+        if (a && slug !== "_front") {
+          orderedArticles.push({
+            slug,
+            title: localized(a.frontmatter.title, locale),
+            category: localized(cat.name, locale),
+          });
+        }
+      }
+    }
+    siblingArticles = orderedArticles;
+
+    // Find prev/next
+    const currentIdx = orderedArticles.findIndex((a) => a.slug === articleSlug);
+    if (currentIdx > 0) {
+      prevArticle = orderedArticles[currentIdx - 1];
+    }
+    if (currentIdx >= 0 && currentIdx < orderedArticles.length - 1) {
+      nextArticle = orderedArticles[currentIdx + 1];
+    }
   } else if (entityInfo.type === "teacher") {
     const teacher = manifest.teachers[entitySlug];
     if (!teacher) notFound();
     article = teacher.articles[articleSlug];
     parentName = localized(teacher.config.name, locale);
     entityType = "teacher";
+
+    // Build article list from teacher articles
+    const teacherArticles = Object.entries(teacher.articles)
+      .filter(([slug]) => slug !== "_front")
+      .map(([slug, a]) => ({
+        slug,
+        title: localized(a.frontmatter.title, locale),
+      }));
+    siblingArticles = teacherArticles;
+
+    const currentIdx = teacherArticles.findIndex((a) => a.slug === articleSlug);
+    if (currentIdx > 0) {
+      prevArticle = teacherArticles[currentIdx - 1];
+    }
+    if (currentIdx >= 0 && currentIdx < teacherArticles.length - 1) {
+      nextArticle = teacherArticles[currentIdx + 1];
+    }
   } else {
     notFound();
   }
@@ -105,11 +150,15 @@ export default async function ArticleRoute({ params }: Props) {
         frontmatter={article.frontmatter}
         toc={toc}
         entitySlug={entitySlug}
+        articleSlug={articleSlug}
         entityType={entityType}
         parentName={parentName}
         locale={locale}
         isFallback={isFallback}
         fallbackLocale={isFallback ? effectiveLocale : undefined}
+        siblingArticles={siblingArticles}
+        prevArticle={prevArticle}
+        nextArticle={nextArticle}
       >
         <MDXRenderer compiledSource={compiledSource} />
       </ArticlePage>

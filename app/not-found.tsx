@@ -1,17 +1,19 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { PageShell } from "@/components/shared/page-shell";
 import { C } from "@/lib/theme";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getTranslations("common");
   return (
-    <PageShell breadcrumbs={[{ label: "Home", href: "/" }, { label: "404" }]} locale="ru">
+    <PageShell breadcrumbs={[{ label: t("home"), href: "/" }, { label: "404" }]} locale="ru">
       <div className="max-w-7xl mx-auto px-4 py-24 md:py-32">
         <div className="max-w-lg">
           <div
-            className="text-[10px] font-bold uppercase tracking-wider mb-6"
-            style={{ color: C.red, fontFamily: "var(--font-mono)" }}
+            className="text-[11px] font-bold uppercase tracking-wider mb-6"
+            style={{ color: C.textMuted, fontFamily: "var(--font-mono)" }}
           >
-            // ERROR
+            {t("error")}
           </div>
           <h1
             className="text-8xl md:text-[140px] font-bold leading-none tracking-tighter"
@@ -24,17 +26,15 @@ export default function NotFound() {
             style={{ fontFamily: "var(--font-mono)" }}
           >
             <p
-              className="text-sm uppercase mb-2"
-              style={{ color: C.red }}
+              className="text-base uppercase mb-2"
             >
-              PAGE_NOT_FOUND
+              {t("pageNotFound")}
             </p>
             <p
-              className="text-xs uppercase leading-relaxed"
+              className="text-sm uppercase leading-relaxed"
               style={{ color: C.textMuted }}
             >
-              The requested resource does not exist in the database. Check the
-              URL or use the search function to find what you need.
+              {t("pageNotFoundDescription")}
             </p>
           </div>
           <div
@@ -43,10 +43,10 @@ export default function NotFound() {
           >
             <Link
               href="/"
-              className="border-2 px-4 py-2 text-[10px] font-bold uppercase tracking-wider transition-colors hover:bg-black hover:text-white"
-              style={{ borderColor: C.border }}
+              className="border px-4 py-2 text-[11px] font-bold uppercase tracking-wider transition-colors hover:underline"
+              style={{ borderColor: C.borderLight }}
             >
-              ← HOME
+              ← {t("home")}
             </Link>
           </div>
         </div>

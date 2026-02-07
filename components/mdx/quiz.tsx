@@ -7,6 +7,7 @@ import {
   createContext,
   useContext,
 } from "react";
+import { useTranslations } from "next-intl";
 import { C } from "@/lib/theme";
 
 /* ── Types ────────────────────────────────────────────── */
@@ -190,6 +191,7 @@ interface QuizProps {
 export function Quiz({ children }: QuizProps) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const t = useTranslations("common");
 
   // Extract Question children
   const questions: { text: string; content: ReactNode }[] = [];
@@ -244,14 +246,14 @@ export function Quiz({ children }: QuizProps) {
           className="text-[10px] font-bold uppercase tracking-[0.15em]"
           style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
         >
-          ■ Quiz — {questions.length} question{questions.length !== 1 && "s"}
+          {t("quiz")} — {questions.length} {questions.length !== 1 ? t("questions") : t("question")}
         </span>
         {submitted && (
           <span
             className="text-[10px] font-bold tracking-[0.1em]"
             style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
           >
-            {getCorrectCount()}/{questions.length} CORRECT
+            {getCorrectCount()}/{questions.length} {t("correct")}
           </span>
         )}
       </div>
@@ -291,7 +293,7 @@ export function Quiz({ children }: QuizProps) {
               color: allAnswered ? C.headerText : C.text,
             }}
           >
-            Check Answers
+            {t("checkAnswers")}
           </button>
         ) : (
           <button
@@ -306,7 +308,7 @@ export function Quiz({ children }: QuizProps) {
               color: C.text,
             }}
           >
-            Try Again
+            {t("tryAgain")}
           </button>
         )}
 
@@ -315,7 +317,7 @@ export function Quiz({ children }: QuizProps) {
             className="text-[10px] tracking-wider uppercase"
             style={{ fontFamily: "var(--font-mono)", color: C.textMuted }}
           >
-            {Object.keys(answers).length}/{questions.length} answered
+            {Object.keys(answers).length}/{questions.length} {t("answered")}
           </span>
         )}
       </div>

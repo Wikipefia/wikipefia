@@ -91,7 +91,7 @@ export function BarChart({
   const maxVal = Math.max(...values, 1);
 
   const PALETTE = [
-    "#ff0000",
+    "#2563EB",
     "#0066cc",
     "#22863a",
     "#cc6600",
@@ -267,13 +267,13 @@ export function BarChart({
                       [s.name]: parseFloat(e.target.value),
                     }))
                   }
-                  className="flex-1 h-1.5 cursor-pointer accent-[#ff0000]"
+                  className="flex-1 h-1.5 cursor-pointer accent-blue-600"
                 />
                 <span
                   className="shrink-0 text-[11px] font-bold tabular-nums w-14 text-right"
                   style={{
                     fontFamily: "var(--font-mono)",
-                    color: C.red,
+                    color: C.accent,
                   }}
                 >
                   {val.toFixed(decimals)}

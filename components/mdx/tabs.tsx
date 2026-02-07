@@ -65,7 +65,7 @@ export function Tabs({ children }: TabsProps) {
             {active === i && (
               <span
                 className="absolute bottom-0 left-0 right-0 h-[3px]"
-                style={{ backgroundColor: C.red }}
+                style={{ backgroundColor: C.accent }}
               />
             )}
           </button>
@@ -74,7 +74,7 @@ export function Tabs({ children }: TabsProps) {
 
       {/* Content */}
       <div
-        className="p-4 text-[14px] leading-[1.75]"
+        className="p-4 pb-0 text-[14px] leading-[1.75]"
         style={{ fontFamily: "var(--font-serif)" }}
       >
         {tabs[active]?.content}

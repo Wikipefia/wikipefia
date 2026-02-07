@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
-import { C } from "@/lib/theme";
+import { useTranslations } from "next-intl";
+import { C, getSubjectTheme } from "@/lib/theme";
 import { PageShell } from "@/components/shared/page-shell";
 import type {
   ExploreData,
@@ -15,33 +16,6 @@ import type {
 /* ── Tab types ── */
 type Tab = "all" | "subjects" | "faculty" | "articles" | "system";
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: "all", label: "ALL" },
-  { id: "subjects", label: "SUBJECTS" },
-  { id: "faculty", label: "FACULTY" },
-  { id: "articles", label: "ARTICLES" },
-  { id: "system", label: "SYSTEM" },
-];
-
-/* ── Difficulty badge ── */
-function DiffBadge({ d }: { d?: string }) {
-  if (!d) return null;
-  const color =
-    d === "hard" || d === "advanced"
-      ? C.red
-      : d === "medium" || d === "intermediate"
-      ? "#cc8800"
-      : "#008800";
-  return (
-    <span
-      className="text-[9px] font-bold uppercase px-1 py-px border"
-      style={{ borderColor: color, color }}
-    >
-      {d.slice(0, 4)}
-    </span>
-  );
-}
-
 /* ── Locale pills ── */
 function LocalePills({ locales }: { locales: string[] }) {
   return (
@@ -49,7 +23,7 @@ function LocalePills({ locales }: { locales: string[] }) {
       {locales.map((l) => (
         <span
           key={l}
-          className="text-[8px] font-bold uppercase px-1 py-px border"
+          className="text-[9px] font-bold uppercase px-1 py-px border"
           style={{ borderColor: C.borderLight, color: C.textMuted }}
         >
           {l}
@@ -72,16 +46,16 @@ function SectionHeader({
   return (
     <div id={id} className="flex items-center justify-between mb-6 scroll-mt-24">
       <div
-        className="text-[10px] font-bold uppercase tracking-wider"
-        style={{ color: C.red }}
+        className="text-[11px] font-bold uppercase tracking-wider"
+        style={{ color: C.accent }}
       >
-        // {label}
+        {label}
       </div>
       <div
-        className="text-[10px] uppercase tracking-wider tabular-nums"
+        className="text-[11px] uppercase tracking-wider tabular-nums"
         style={{ color: C.textMuted }}
       >
-        [{count}]
+        {count}
       </div>
     </div>
   );
@@ -90,11 +64,13 @@ function SectionHeader({
 /* ── Expandable subject row ── */
 function SubjectRow({ sub, idx }: { sub: ExploreSubject; idx: number }) {
   const [open, setOpen] = useState(false);
+  const theme = getSubjectTheme(sub.slug);
+  const t = useTranslations("common");
 
   return (
     <motion.div
-      className="border-2"
-      style={{ borderColor: C.border }}
+      className="border"
+      style={{ borderColor: C.borderLight }}
       initial={{ opacity: 0, y: 8 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -102,39 +78,39 @@ function SubjectRow({ sub, idx }: { sub: ExploreSubject; idx: number }) {
     >
       {/* Header row */}
       <div
-        className="grid grid-cols-[1fr_auto] items-center cursor-pointer transition-colors hover:bg-black hover:text-white"
+        className="grid grid-cols-[1fr_auto] items-center cursor-pointer"
         onClick={() => setOpen(!open)}
       >
         <Link
           href={`/${sub.slug}`}
-          className="px-4 py-4 transition-colors hover:text-[#ff0000]"
+          className="px-4 py-4 group"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center gap-3 mb-1">
-            <span className="text-sm font-bold uppercase">{sub.name}</span>
-            <DiffBadge d={sub.difficulty} />
+            <span className="text-lg" style={{ color: theme.accent }}>{theme.icon}</span>
+            <span className="text-base font-bold uppercase group-hover:underline">{sub.name}</span>
           </div>
           <p
-            className="text-[11px] uppercase"
+            className="text-[12px] uppercase"
             style={{ color: C.textMuted }}
           >
             {sub.description}
           </p>
         </Link>
         <div className="px-4 flex items-center gap-6 shrink-0">
-          <div className="hidden md:flex items-center gap-4 text-[10px] uppercase" style={{ color: C.textMuted }}>
+          <div className="hidden md:flex items-center gap-4 text-[11px] uppercase" style={{ color: C.textMuted }}>
             <span>S{sub.semester}</span>
             <span>{sub.credits} ECTS</span>
             <span>{sub.department}</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[10px] tabular-nums" style={{ color: C.textMuted }}>
-              {sub.articles.length} ART
+            <span className="text-[11px] tabular-nums" style={{ color: C.textMuted }}>
+              {t("articlesCount", { count: sub.articles.length })}
             </span>
             <button
-              className="w-6 h-6 flex items-center justify-center border text-[10px] font-bold cursor-pointer transition-transform"
+              className="w-6 h-6 flex items-center justify-center border text-[11px] font-bold cursor-pointer transition-transform"
               style={{
-                borderColor: C.border,
+                borderColor: C.borderLight,
                 transform: open ? "rotate(45deg)" : "rotate(0deg)",
               }}
               onClick={(e) => {
@@ -158,14 +134,12 @@ function SubjectRow({ sub, idx }: { sub: ExploreSubject; idx: number }) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div
-              style={{ borderTop: `2px solid ${C.border}` }}
-            >
+            <div style={{ borderTop: `1px solid ${C.borderLight}` }}>
               {sub.articles.map((article, ai) => (
                 <Link
                   key={article.slug}
                   href={`/${sub.slug}/${article.slug}`}
-                  className="flex items-center justify-between px-4 py-2.5 pl-8 transition-colors hover:bg-black hover:text-white"
+                  className="flex items-center justify-between px-4 py-2.5 pl-8 group"
                   style={{
                     borderBottom:
                       ai < sub.articles.length - 1
@@ -174,31 +148,30 @@ function SubjectRow({ sub, idx }: { sub: ExploreSubject; idx: number }) {
                   }}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px]" style={{ color: C.textMuted }}>
+                    <span className="text-[11px]" style={{ color: theme.accent }}>
                       ▸
                     </span>
-                    <span className="text-xs uppercase">{article.title}</span>
+                    <span className="text-sm uppercase group-hover:underline">{article.title}</span>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     <LocalePills locales={article.locales} />
                     {article.readTime && (
-                      <span className="text-[10px]" style={{ color: C.textMuted }}>
+                      <span className="text-[11px]" style={{ color: C.textMuted }}>
                         {article.readTime}m
                       </span>
                     )}
-                    <DiffBadge d={article.difficulty} />
                   </div>
                 </Link>
               ))}
               {sub.teachers.length > 0 && (
                 <div
-                  className="px-4 py-2 pl-8 text-[10px] uppercase"
+                  className="px-4 py-2 pl-8 text-[11px] uppercase"
                   style={{
                     borderTop: `1px solid ${C.borderLight}`,
                     color: C.textMuted,
                   }}
                 >
-                  FACULTY: {sub.teachers.join(" · ")}
+                  {t("facultyColon")} {sub.teachers.join(" · ")}
                 </div>
               )}
             </div>
@@ -210,52 +183,52 @@ function SubjectRow({ sub, idx }: { sub: ExploreSubject; idx: number }) {
 }
 
 /* ── Teacher row ── */
-function TeacherRow({ t, idx }: { t: ExploreTeacher; idx: number }) {
+function TeacherRow({ t: teacher, idx }: { t: ExploreTeacher; idx: number }) {
   const [open, setOpen] = useState(false);
+  const t = useTranslations("common");
 
   return (
     <motion.div
-      className="border-2"
-      style={{ borderColor: C.border }}
+      className="border"
+      style={{ borderColor: C.borderLight }}
       initial={{ opacity: 0, y: 8 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: idx * 0.04 }}
     >
       <div
-        className="grid grid-cols-[1fr_auto] items-center cursor-pointer transition-colors hover:bg-black hover:text-white"
+        className="grid grid-cols-[1fr_auto] items-center cursor-pointer"
         onClick={() => setOpen(!open)}
       >
         <Link
-          href={`/${t.slug}`}
-          className="px-4 py-4 transition-colors hover:text-[#ff0000]"
+          href={`/${teacher.slug}`}
+          className="px-4 py-4 group"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center gap-3 mb-1">
-            <span className="text-sm font-bold uppercase">{t.name}</span>
+            <span className="text-base font-bold uppercase group-hover:underline">{teacher.name}</span>
             <span
-              className="text-[10px] font-bold tabular-nums"
-              style={{ color: C.red }}
+              className="text-[11px] font-bold tabular-nums"
+              style={{ color: C.accent }}
             >
-              {t.ratings.overall}/5.0
+              {teacher.ratings.overall}/5.0
             </span>
           </div>
-          <p className="text-[11px] uppercase" style={{ color: C.textMuted }}>
-            {t.description}
+          <p className="text-[12px] uppercase" style={{ color: C.textMuted }}>
+            {teacher.description}
           </p>
         </Link>
         <div className="px-4 flex items-center gap-4 shrink-0">
-          <div className="hidden md:flex gap-3 text-[10px] uppercase tabular-nums" style={{ color: C.textMuted }}>
-            <span>CLR {t.ratings.clarity}</span>
-            <span>USE {t.ratings.usefulness}</span>
-            <span>DIF {t.ratings.difficulty}</span>
-            <span>{t.ratings.count} REV</span>
+          <div className="hidden md:flex gap-3 text-[11px] uppercase tabular-nums" style={{ color: C.textMuted }}>
+            <span>{t("clarityLabel")} {teacher.ratings.clarity}</span>
+            <span>{t("usefulness")} {teacher.ratings.usefulness}</span>
+            <span>{t("reviewsCount", { count: teacher.ratings.count })}</span>
           </div>
-          {t.articles.length > 0 && (
+          {teacher.articles.length > 0 && (
             <button
-              className="w-6 h-6 flex items-center justify-center border text-[10px] font-bold cursor-pointer transition-transform"
+              className="w-6 h-6 flex items-center justify-center border text-[11px] font-bold cursor-pointer transition-transform"
               style={{
-                borderColor: C.border,
+                borderColor: C.borderLight,
                 transform: open ? "rotate(45deg)" : "rotate(0deg)",
               }}
               onClick={(e) => {
@@ -270,7 +243,7 @@ function TeacherRow({ t, idx }: { t: ExploreTeacher; idx: number }) {
       </div>
 
       <AnimatePresence>
-        {open && t.articles.length > 0 && (
+        {open && teacher.articles.length > 0 && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -278,51 +251,51 @@ function TeacherRow({ t, idx }: { t: ExploreTeacher; idx: number }) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div style={{ borderTop: `2px solid ${C.border}` }}>
-              {t.articles.map((article, ai) => (
+            <div style={{ borderTop: `1px solid ${C.borderLight}` }}>
+              {teacher.articles.map((article, ai) => (
                 <Link
                   key={article.slug}
-                  href={`/${t.slug}/${article.slug}`}
-                  className="flex items-center justify-between px-4 py-2.5 pl-8 transition-colors hover:bg-black hover:text-white"
+                  href={`/${teacher.slug}/${article.slug}`}
+                  className="flex items-center justify-between px-4 py-2.5 pl-8 group"
                   style={{
                     borderBottom:
-                      ai < t.articles.length - 1
+                      ai < teacher.articles.length - 1
                         ? `1px solid ${C.borderLight}`
                         : "none",
                   }}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px]" style={{ color: C.textMuted }}>
+                    <span className="text-[11px]" style={{ color: C.textMuted }}>
                       ▸
                     </span>
-                    <span className="text-xs uppercase">{article.title}</span>
+                    <span className="text-sm uppercase group-hover:underline">{article.title}</span>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     <LocalePills locales={article.locales} />
                   </div>
                 </Link>
               ))}
-              {t.subjects.length > 0 && (
+              {teacher.subjects.length > 0 && (
                 <div
-                  className="px-4 py-2 pl-8 text-[10px] uppercase"
+                  className="px-4 py-2 pl-8 text-[11px] uppercase"
                   style={{
                     borderTop: `1px solid ${C.borderLight}`,
                     color: C.textMuted,
                   }}
                 >
-                  TEACHES: {t.subjects.join(" · ")}
+                  {t("teaches")} {teacher.subjects.join(" · ")}
                 </div>
               )}
-              {t.contact && (
+              {teacher.contact && (
                 <div
-                  className="px-4 py-2 pl-8 text-[10px] uppercase"
+                  className="px-4 py-2 pl-8 text-[11px] uppercase"
                   style={{
                     borderTop: `1px solid ${C.borderLight}`,
                     color: C.textMuted,
                   }}
                 >
-                  {t.contact.email && <span>✉ {t.contact.email}</span>}
-                  {t.contact.office && <span className="ml-4">⌂ {t.contact.office}</span>}
+                  {teacher.contact.email && <span>{teacher.contact.email}</span>}
+                  {teacher.contact.office && <span className="ml-4">{teacher.contact.office}</span>}
                 </div>
               )}
             </div>
@@ -341,39 +314,43 @@ function AllArticlesTable({
   subjects: ExploreSubject[];
   teachers: ExploreTeacher[];
 }) {
+  const t = useTranslations("common");
   const allArticles = [
-    ...subjects.flatMap((s) =>
-      s.articles.map((a) => ({
+    ...subjects.flatMap((s) => {
+      const theme = getSubjectTheme(s.slug);
+      return s.articles.map((a) => ({
         ...a,
         parentName: s.name,
         parentType: "subject" as const,
-      }))
-    ),
+        accentColor: theme.accent,
+      }));
+    }),
     ...teachers.flatMap((t) =>
       t.articles.map((a) => ({
         ...a,
         parentName: t.name,
         parentType: "teacher" as const,
+        accentColor: C.accent,
       }))
     ),
   ];
 
   return (
-    <div className="border-2" style={{ borderColor: C.border }}>
+    <div className="border" style={{ borderColor: C.borderLight }}>
       <div
-        className="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-2 text-[10px] font-bold uppercase tracking-wider"
+        className="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider"
         style={{ backgroundColor: C.headerBg, color: C.headerText }}
       >
-        <span>TITLE</span>
-        <span className="text-right w-24 hidden md:block">PARENT</span>
-        <span className="text-right w-12">TIME</span>
-        <span className="text-right w-16">LANG</span>
+        <span>{t("title")}</span>
+        <span className="text-right w-24 hidden md:block">{t("parent")}</span>
+        <span className="text-right w-12">{t("time")}</span>
+        <span className="text-right w-16">{t("lang")}</span>
       </div>
       {allArticles.map((a, i) => (
         <Link
           key={`${a.parentSlug}/${a.slug}`}
           href={`/${a.parentSlug}/${a.slug}`}
-          className="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-3 items-center transition-colors hover:bg-black hover:text-white"
+          className="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-3 items-center group"
           style={{
             borderBottom:
               i < allArticles.length - 1
@@ -382,17 +359,16 @@ function AllArticlesTable({
           }}
         >
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xs uppercase truncate">{a.title}</span>
-            <DiffBadge d={a.difficulty} />
+            <span className="text-sm uppercase truncate group-hover:underline">{a.title}</span>
           </div>
           <span
-            className="text-[10px] uppercase text-right w-24 truncate hidden md:block"
+            className="text-[11px] uppercase text-right w-24 truncate hidden md:block"
             style={{ color: C.textMuted }}
           >
             {a.parentName}
           </span>
           <span
-            className="text-[10px] tabular-nums text-right w-12"
+            className="text-[11px] tabular-nums text-right w-12"
             style={{ color: C.textMuted }}
           >
             {a.readTime ? `${a.readTime}m` : "—"}
@@ -416,6 +392,16 @@ export function ExplorePage({
 }) {
   const [activeTab, setActiveTab] = useState<Tab>("all");
   const { subjects, teachers, systemArticles, buildTime, buildHash } = data;
+  const t = useTranslations("common");
+  const tEntity = useTranslations("entity");
+  
+  const TABS: { id: Tab; label: string }[] = [
+    { id: "all", label: t("all") },
+    { id: "subjects", label: t("subjectsLabel") },
+    { id: "faculty", label: t("facultyLabel") },
+    { id: "articles", label: t("articlesLabel") },
+    { id: "system", label: t("system") },
+  ];
 
   const totalArticles =
     subjects.reduce((acc, s) => acc + s.articles.length, 0) +
@@ -426,13 +412,13 @@ export function ExplorePage({
   return (
     <PageShell
       breadcrumbs={[
-        { label: "Home", href: "/" },
-        { label: "Explore" },
+        { label: t("home"), href: "/" },
+        { label: t("exploreLabel") },
       ]}
       locale={locale}
     >
       {/* ── HEADER ── */}
-      <section className="border-b-2" style={{ borderColor: C.border }}>
+      <section className="border-b" style={{ borderColor: C.borderLight }}>
         <div className="max-w-7xl mx-auto px-4 py-12 md:py-16">
           <motion.div
             initial={{ opacity: 0 }}
@@ -443,57 +429,56 @@ export function ExplorePage({
               <div>
                 <div className="flex items-center gap-3 mb-4">
                   <span
-                    className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider"
-                    style={{ backgroundColor: C.red, color: "#fff" }}
+                    className="text-[11px] font-bold px-2 py-0.5 uppercase tracking-wider"
+                    style={{ backgroundColor: C.accent, color: "#fff" }}
                   >
-                    FULL_INDEX
+                    {t("fullIndex")}
                   </span>
                   <span
-                    className="text-[10px] uppercase tracking-wider"
+                    className="text-[11px] uppercase tracking-wider"
                     style={{ color: C.textMuted }}
                   >
-                    BUILD {buildHash.slice(0, 8)}
+                    {buildHash.slice(0, 8)}
                   </span>
                 </div>
                 <h1 className="text-4xl md:text-6xl font-bold leading-none tracking-tighter uppercase">
-                  EXPLORE
+                  {t("exploreLabel").toUpperCase()}
                 </h1>
                 <p
-                  className="text-sm uppercase mt-3 max-w-lg"
+                  className="text-base uppercase mt-3 max-w-lg"
                   style={{ color: C.textMuted }}
                 >
-                  Complete index of all subjects, articles, faculty, and system
-                  resources. Everything in the database, one page.
+                  {t("fullIndexDescription")}
                 </p>
               </div>
 
-              {/* Stats block */}
-              <div className="border-2 shrink-0" style={{ borderColor: C.border }}>
+              {/* Stats block — wider */}
+              <div className="border shrink-0 w-64" style={{ borderColor: C.borderLight }}>
                 <div
-                  className="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider"
+                  className="px-4 py-2 text-[10px] font-bold uppercase tracking-wider"
                   style={{ backgroundColor: C.headerBg, color: C.headerText }}
                 >
-                  MANIFEST
+                  {t("manifest")}
                 </div>
                 {[
-                  { k: "SUBJECTS", v: subjects.length },
-                  { k: "FACULTY", v: teachers.length },
-                  { k: "ARTICLES", v: totalArticles },
-                  { k: "SYSTEM", v: systemArticles.length },
+                  { k: t("subjectsLabel"), v: subjects.length },
+                  { k: t("facultyLabel"), v: teachers.length },
+                  { k: t("articlesLabel"), v: totalArticles },
+                  { k: t("system"), v: systemArticles.length },
                 ].map((row, i) => (
                   <div
                     key={row.k}
-                    className="px-3 py-1.5 flex items-center justify-between gap-8 text-[10px]"
+                    className="px-4 py-2 flex items-center justify-between text-[11px]"
                     style={{
                       borderBottom: i < 3 ? `1px solid ${C.borderLight}` : "none",
                     }}
                   >
-                    <span className="uppercase tracking-wider">{row.k}</span>
+                    <span className="uppercase tracking-wider" style={{ color: C.textMuted }}>{row.k}</span>
                     <span className="font-bold tabular-nums">{row.v}</span>
                   </div>
                 ))}
                 <div
-                  className="px-3 py-1.5 text-[9px] uppercase"
+                  className="px-4 py-2 text-[10px] uppercase"
                   style={{
                     borderTop: `1px solid ${C.borderLight}`,
                     color: C.textMuted,
@@ -513,8 +498,8 @@ export function ExplorePage({
 
       {/* ── TAB BAR ── */}
       <section
-        className="border-b-2 sticky top-12 z-30"
-        style={{ borderColor: C.border, backgroundColor: C.bg }}
+        className="border-b sticky top-14 z-30"
+        style={{ borderColor: C.borderLight, backgroundColor: C.bg }}
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex">
@@ -522,12 +507,11 @@ export function ExplorePage({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
                 style={{
                   backgroundColor:
                     activeTab === tab.id ? C.headerBg : "transparent",
                   color: activeTab === tab.id ? C.headerText : C.textMuted,
-                  borderRight: `1px solid ${C.borderLight}`,
                 }}
               >
                 {tab.label}
@@ -543,7 +527,7 @@ export function ExplorePage({
         {show("subjects") && (
           <section>
             <SectionHeader
-              label="SUBJECTS"
+              label={t("subjects")}
               count={subjects.length}
               id="subjects"
             />
@@ -559,7 +543,7 @@ export function ExplorePage({
         {show("faculty") && (
           <section>
             <SectionHeader
-              label="FACULTY"
+              label={tEntity("faculty")}
               count={teachers.length}
               id="faculty"
             />
@@ -575,7 +559,7 @@ export function ExplorePage({
         {show("articles") && (
           <section>
             <SectionHeader
-              label="ALL_ARTICLES"
+              label={t("allArticles")}
               count={totalArticles}
               id="articles"
             />
@@ -587,24 +571,24 @@ export function ExplorePage({
         {show("system") && (
           <section>
             <SectionHeader
-              label="SYSTEM_ARTICLES"
+              label={t("allArticles")}
               count={systemArticles.length}
               id="system"
             />
-            <div className="border-2" style={{ borderColor: C.border }}>
+            <div className="border" style={{ borderColor: C.borderLight }}>
               <div
-                className="grid grid-cols-[1fr_auto_auto] gap-4 px-4 py-2 text-[10px] font-bold uppercase tracking-wider"
+                className="grid grid-cols-[1fr_auto_auto] gap-4 px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider"
                 style={{ backgroundColor: C.headerBg, color: C.headerText }}
               >
-                <span>NAME</span>
-                <span className="text-right w-16">PINNED</span>
-                <span className="text-right w-16">LANG</span>
+                <span>{t("title")}</span>
+                <span className="text-right w-16">{t("pinned")}</span>
+                <span className="text-right w-16">{t("lang")}</span>
               </div>
               {systemArticles.map((sa, i) => (
                 <Link
                   key={sa.slug}
                   href={sa.route}
-                  className="grid grid-cols-[1fr_auto_auto] gap-4 px-4 py-3 items-center transition-colors hover:bg-black hover:text-white"
+                  className="grid grid-cols-[1fr_auto_auto] gap-4 px-4 py-3 items-center group"
                   style={{
                     borderBottom:
                       i < systemArticles.length - 1
@@ -613,12 +597,12 @@ export function ExplorePage({
                   }}
                 >
                   <div>
-                    <span className="text-xs font-bold uppercase">
+                    <span className="text-sm font-bold uppercase group-hover:underline">
                       {sa.name}
                     </span>
                     {sa.description && (
                       <p
-                        className="text-[11px] uppercase mt-0.5"
+                        className="text-[12px] uppercase mt-0.5"
                         style={{ color: C.textMuted }}
                       >
                         {sa.description}
@@ -628,10 +612,10 @@ export function ExplorePage({
                   <div className="text-right w-16">
                     {sa.pinned && (
                       <span
-                        className="text-[9px] font-bold px-1 py-px border"
-                        style={{ borderColor: C.red, color: C.red }}
+                        className="text-[10px] font-bold px-1.5 py-0.5 border"
+                        style={{ borderColor: C.accent, color: C.accent }}
                       >
-                        PIN
+                        {t("pinned")}
                       </span>
                     )}
                   </div>

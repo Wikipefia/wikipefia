@@ -43,6 +43,19 @@ export default async function EntityPage({ params }: Props) {
     const subject = manifest.subjects[entitySlug];
     if (!subject) notFound();
 
+    // Load _front article MDX if it exists
+    const frontArticle = subject.articles["_front"];
+    let frontMdxContent: React.ReactNode = null;
+    if (frontArticle) {
+      try {
+        const effectiveLocale = resolveLocale(frontArticle.locales, locale);
+        const compiledSource = await getCompiledMDX(frontArticle.compiledPath, effectiveLocale);
+        frontMdxContent = <MDXRenderer compiledSource={compiledSource} />;
+      } catch {
+        // _front article not available, that's fine
+      }
+    }
+
     return (
       <PageShell
         breadcrumbs={[
@@ -54,7 +67,9 @@ export default async function EntityPage({ params }: Props) {
         <SubjectFront
           subject={subject}
           locale={locale}
-        />
+        >
+          {frontMdxContent}
+        </SubjectFront>
       </PageShell>
     );
   }
@@ -99,10 +114,10 @@ export default async function EntityPage({ params }: Props) {
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="mb-8">
             <span
-              className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider"
-              style={{ backgroundColor: C.red, color: C.headerText }}
+              className="text-[11px] font-bold px-2 py-0.5 uppercase tracking-wider"
+              style={{ backgroundColor: C.accent, color: "#fff" }}
             >
-              SYSTEM_ARTICLE
+              System Article
             </span>
             <h1
               className="text-3xl md:text-5xl font-bold leading-tight tracking-tighter uppercase mt-4"
@@ -112,14 +127,15 @@ export default async function EntityPage({ params }: Props) {
             </h1>
             {sysArticle.config.description && (
               <p
-                className="text-sm uppercase mt-4"
+                className="text-base uppercase mt-4"
                 style={{ color: C.textMuted }}
               >
                 {localized(sysArticle.config.description, locale)}
               </p>
             )}
           </div>
-          <div style={{ borderTop: `2px solid ${C.border}` }} className="pt-6">
+          {/* Single divider — content follows directly */}
+          <div className="prose-wiki">
             {compiledSource && (
               <MDXRenderer compiledSource={compiledSource} />
             )}

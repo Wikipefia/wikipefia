@@ -102,12 +102,11 @@ export const mdxComponents: MDXComponents = {
   DArrow,
   DLabel,
 
-  // Typography
+  // Typography — headings use subtle spacing instead of colored underlines
   h1: ({ children, id, ...props }) => (
     <h1
       id={id}
-      className="text-2xl md:text-3xl font-bold uppercase mt-10 mb-6 pt-6 scroll-mt-24 tracking-tighter"
-      style={{ borderTop: `2px solid ${C.border}` }}
+      className="text-3xl md:text-4xl font-bold uppercase mb-6 scroll-mt-24 tracking-tighter"
       {...props}
     >
       {children}
@@ -116,8 +115,7 @@ export const mdxComponents: MDXComponents = {
   h2: ({ children, id, ...props }) => (
     <h2
       id={id}
-      className="text-xl font-bold uppercase mt-10 mb-4 pt-6 scroll-mt-20"
-      style={{ borderTop: `2px solid ${C.borderLight}` }}
+      className="text-2xl font-bold uppercase mt-10 mb-4 scroll-mt-20"
       {...props}
     >
       {children}
@@ -126,7 +124,8 @@ export const mdxComponents: MDXComponents = {
   h3: ({ children, id, ...props }) => (
     <h3
       id={id}
-      className="text-base font-bold uppercase mt-8 mb-3 scroll-mt-20"
+      className="text-lg font-bold uppercase mt-8 mb-3 scroll-mt-20"
+      style={{ color: C.text }}
       {...props}
     >
       {children}
@@ -135,17 +134,17 @@ export const mdxComponents: MDXComponents = {
   h4: ({ children, id, ...props }) => (
     <h4
       id={id}
-      className="text-sm font-bold uppercase mt-6 mb-2 scroll-mt-20"
+      className="text-base font-bold uppercase mt-6 mb-2 scroll-mt-20"
       {...props}
     >
       {children}
     </h4>
   ),
 
-  // Paragraphs
+  // Paragraphs — slightly larger
   p: ({ children, ...props }) => (
     <p
-      className="text-[15px] leading-[1.8] mb-5"
+      className="text-[16px] leading-[1.85] mb-5"
       style={{ color: C.text, fontFamily: "var(--font-serif)" }}
       {...props}
     >
@@ -156,8 +155,8 @@ export const mdxComponents: MDXComponents = {
   // Code blocks
   pre: ({ children, ...props }) => (
     <pre
-      className="overflow-x-auto rounded-none border-2 mb-6 text-xs leading-relaxed"
-      style={{ backgroundColor: C.bg, borderColor: C.border }}
+      className="overflow-x-auto rounded-none border mb-6 text-sm leading-relaxed"
+      style={{ backgroundColor: C.bg, borderColor: C.borderLight }}
       {...props}
     >
       {children}
@@ -168,7 +167,7 @@ export const mdxComponents: MDXComponents = {
     if (!className) {
       return (
         <code
-          className="px-1.5 py-0.5 text-[13px] font-mono border"
+          className="px-1.5 py-0.5 text-[14px] font-mono border"
           style={{
             backgroundColor: C.bg,
             borderColor: C.borderLight,
@@ -187,7 +186,7 @@ export const mdxComponents: MDXComponents = {
     );
   },
 
-  // Links (internal vs external)
+  // Links — clean underline, no red decoration
   a: ({ href, children, ...props }) => {
     const isExternal = href?.startsWith("http");
     if (isExternal) {
@@ -196,8 +195,8 @@ export const mdxComponents: MDXComponents = {
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="underline underline-offset-2 hover:text-[#ff0000] transition-colors"
-          style={{ textDecorationColor: C.red }}
+          className="underline underline-offset-2 decoration-1 hover:decoration-2 transition-all"
+          style={{ color: C.accent, textDecorationColor: C.borderLight }}
           {...props}
         >
           {children}
@@ -207,8 +206,8 @@ export const mdxComponents: MDXComponents = {
     return (
       <Link
         href={href || "#"}
-        className="underline underline-offset-2 hover:text-[#ff0000] transition-colors"
-        style={{ textDecorationColor: C.red }}
+        className="underline underline-offset-2 decoration-1 hover:decoration-2 transition-all"
+        style={{ color: C.accent, textDecorationColor: C.borderLight }}
         {...props}
       >
         {children}
@@ -229,7 +228,7 @@ export const mdxComponents: MDXComponents = {
   ),
   li: ({ children, ...props }) => (
     <li
-      className="text-[14px] leading-[1.7] pl-3"
+      className="text-[15px] leading-[1.75] pl-3"
       style={{
         color: C.text,
         fontFamily: "var(--font-serif)",
@@ -241,13 +240,13 @@ export const mdxComponents: MDXComponents = {
     </li>
   ),
 
-  // Blockquotes (used for callouts in MDX)
+  // Blockquotes
   blockquote: ({ children, ...props }) => (
     <blockquote
-      className="border-l-4 px-4 py-3 mb-6 text-[13px] leading-[1.7]"
+      className="border-l-4 px-4 py-3 mb-6 text-[14px] leading-[1.75]"
       style={{
-        borderLeftColor: "#0066cc",
-        backgroundColor: "rgba(0, 102, 204, 0.04)",
+        borderLeftColor: C.borderLight,
+        backgroundColor: "rgba(0, 0, 0, 0.02)",
         color: C.textMuted,
         fontFamily: "var(--font-serif)",
       }}
@@ -259,15 +258,18 @@ export const mdxComponents: MDXComponents = {
 
   // Tables
   table: ({ children, ...props }) => (
-    <div className="overflow-x-auto mb-6 border-2" style={{ borderColor: C.border }}>
-      <table className="w-full text-[13px]" {...props}>
+    <div
+      className="overflow-x-auto mb-6 border"
+      style={{ borderColor: C.borderLight }}
+    >
+      <table className="w-full text-[14px]" {...props}>
         {children}
       </table>
     </div>
   ),
   thead: ({ children, ...props }) => (
     <thead
-      className="text-[10px] font-bold uppercase tracking-wider"
+      className="text-[11px] font-bold uppercase tracking-wider"
       style={{ backgroundColor: C.headerBg, color: C.headerText }}
       {...props}
     >

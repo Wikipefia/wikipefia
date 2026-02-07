@@ -15,17 +15,17 @@ export function LocaleSwitcher({ currentLocale }: { currentLocale: string }) {
   }
 
   return (
-    <div className="flex border-2" style={{ borderColor: C.border }}>
+    <div className="flex border h-[34px]" style={{ borderColor: C.borderLight }}>
       {Object.entries(LOCALE_LABELS).map(([locale, label], i, arr) => (
         <button
           key={locale}
           onClick={() => switchLocale(locale)}
-          className="px-2 py-1 text-[10px] font-bold cursor-pointer transition-colors"
+          className="px-2.5 text-[11px] font-bold cursor-pointer transition-colors flex items-center"
           style={{
             backgroundColor: locale === currentLocale ? C.headerBg : "transparent",
-            color: locale === currentLocale ? C.headerText : C.text,
+            color: locale === currentLocale ? C.headerText : C.textMuted,
             borderRight:
-              i < arr.length - 1 ? `2px solid ${C.border}` : "none",
+              i < arr.length - 1 ? `1px solid ${C.borderLight}` : "none",
           }}
         >
           {label}

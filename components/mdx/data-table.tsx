@@ -113,7 +113,7 @@ export function DataTable({
                         className="text-[8px]"
                         style={{
                           color:
-                            sortCol === i ? C.red : C.borderLight,
+                            sortCol === i ? C.accent : C.borderLight,
                         }}
                       >
                         {sortCol === i

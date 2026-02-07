@@ -26,30 +26,27 @@ export function SystemArticlePage({
     <div className="max-w-4xl mx-auto px-4 py-12">
       <div className="mb-8">
         <span
-          className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider"
-          style={{ backgroundColor: C.red, color: C.headerText }}
+          className="text-[11px] font-bold px-2 py-0.5 uppercase tracking-wider"
+          style={{ backgroundColor: C.accent, color: "#fff" }}
         >
-          SYSTEM_ARTICLE
+          System Article
         </span>
         <h1 className="text-3xl md:text-5xl font-bold leading-tight tracking-tighter uppercase mt-4">
           {loc(article.config.name, locale)}
         </h1>
         {article.config.description && (
           <p
-            className="text-sm uppercase mt-4"
+            className="text-base uppercase mt-4"
             style={{ color: C.textMuted }}
           >
             {loc(article.config.description, locale)}
           </p>
         )}
       </div>
-      <div
-        className="pt-6"
-        style={{ borderTop: `2px solid ${C.border}` }}
-      >
+      <div className="prose-wiki">
         {/* MDX content is rendered in the server component and streamed */}
         <p
-          className="text-[10px] uppercase tracking-wider"
+          className="text-[11px] uppercase tracking-wider"
           style={{ color: C.textMuted }}
         >
           Article content rendered via MDX

@@ -101,7 +101,7 @@ export function CycleDiagram({
     return `M${startX},${startY} Q${midX},${midY} ${endX},${endY}`;
   });
 
-  const PALETTE = ["#ff0000", "#0066cc", "#22863a", "#cc6600", "#8b5cf6"];
+  const PALETTE = ["#2563EB", "#059669", "#D97706", "#7C3AED", "#0891B2"];
 
   return (
     <div ref={ref} className="mb-6 border-2" style={{ borderColor: C.border }}>

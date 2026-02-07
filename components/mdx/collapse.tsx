@@ -13,7 +13,7 @@ export function Collapse({ title, children }: CollapseProps) {
 
   return (
     <div
-      className="mb-6 border-2"
+      className="my-4 border-2"
       style={{
         borderColor: C.border,
         backgroundColor: open ? C.bg : C.bgWhite,
@@ -43,7 +43,7 @@ export function Collapse({ title, children }: CollapseProps) {
 
       {open && (
         <div
-          className="px-4 pb-4 text-[14px] leading-[1.75] border-t-2"
+          className="px-4 pt-3 text-[14px] leading-[1.75] border-t-2"
           style={{ fontFamily: "var(--font-serif)", borderColor: C.border }}
         >
           {children}

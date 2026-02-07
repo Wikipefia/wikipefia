@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { C } from "@/lib/theme";
 import type { ArticleFrontmatterType } from "@/lib/schemas";
 import type { TocEntry } from "@/lib/content/types";
@@ -11,7 +12,7 @@ function loc(obj: Record<string, string>, locale: string): string {
   return obj[locale] || obj.en || obj.ru || "";
 }
 
-/* ── Table of Contents ── */
+/* ── Table of Contents (right sidebar) ── */
 function TableOfContents({
   toc,
   activeId,
@@ -19,29 +20,19 @@ function TableOfContents({
   toc: TocEntry[];
   activeId: string;
 }) {
+  if (toc.length === 0) return null;
+
   return (
     <nav className="space-y-0.5">
-      <div
-        className="text-[9px] font-bold uppercase tracking-wider mb-3 pb-2"
-        style={{ color: C.red, borderBottom: `1px solid ${C.borderLight}` }}
-      >
-        TABLE_OF_CONTENTS
-      </div>
       {toc.map((entry) => (
         <a
           key={entry.id}
           href={`#${entry.id}`}
-          className="block text-[11px] uppercase py-1 transition-colors hover:text-[#ff0000]"
+          className="block text-[12px] uppercase py-1 transition-colors hover:underline"
           style={{
             paddingLeft: entry.depth >= 3 ? "12px" : "0",
             color: activeId === entry.id ? C.text : C.textMuted,
-            fontWeight: activeId === entry.id ? 700 : 400,
-            borderLeft:
-              activeId === entry.id
-                ? `2px solid ${C.red}`
-                : entry.depth >= 3
-                ? `1px solid ${C.borderLight}`
-                : "none",
+            fontWeight: activeId === entry.id ? 600 : 400,
           }}
         >
           {entry.text}
@@ -51,113 +42,117 @@ function TableOfContents({
   );
 }
 
-/* ── Meta Sidebar ── */
-function MetaSidebar({
-  frontmatter,
+/* ── Article Sidebar (left - list of articles in subject) ── */
+function ArticleSidebar({
+  articles,
+  currentSlug,
   entitySlug,
-  locale,
 }: {
-  frontmatter: ArticleFrontmatterType;
+  articles: Array<{ slug: string; title: string; category?: string }>;
+  currentSlug: string;
   entitySlug: string;
-  locale: string;
 }) {
-  const diffColor =
-    frontmatter.difficulty === "advanced"
-      ? C.red
-      : frontmatter.difficulty === "intermediate"
-      ? "#cc8800"
-      : "#008800";
+  if (articles.length === 0) return null;
+
+  // Group by category
+  const t = useTranslations("common");
+  const groups: Record<string, Array<{ slug: string; title: string }>> = {};
+  for (const a of articles) {
+    const cat = a.category || t("articles");
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(a);
+  }
 
   return (
-    <div className="space-y-0">
-      <div
-        className="text-[9px] font-bold uppercase tracking-wider mb-3 pb-2"
-        style={{ color: C.red, borderBottom: `1px solid ${C.borderLight}` }}
-      >
-        ARTICLE_META
-      </div>
-      <div className="border-2" style={{ borderColor: C.border }}>
-        {[
-          frontmatter.difficulty && {
-            label: "DIFFICULTY",
-            value: frontmatter.difficulty.toUpperCase(),
-            color: diffColor,
-          },
-          frontmatter.estimatedReadTime && {
-            label: "READ_TIME",
-            value: `${frontmatter.estimatedReadTime} MIN`,
-          },
-          frontmatter.author && {
-            label: "AUTHOR",
-            value: frontmatter.author.toUpperCase(),
-          },
-          { label: "CREATED", value: frontmatter.created },
-          frontmatter.updated && {
-            label: "UPDATED",
-            value: frontmatter.updated,
-          },
-        ]
-          .filter((x): x is { label: string; value: string; color?: string } => Boolean(x))
-          .map((item, i, arr) => (
+    <nav className="space-y-4">
+      {Object.entries(groups).map(([cat, items], index) => (
+        <div key={cat}>
+          {Object.keys(groups).length > 1 && (
             <div
-              key={item.label}
-              className="px-3 py-2 flex items-center justify-between"
-              style={{
-                borderBottom:
-                  i < arr.length - 1
-                    ? `1px solid ${C.borderLight}`
-                    : "none",
-              }}
-            >
-              <span
-                className="text-[9px] uppercase tracking-wider"
-                style={{ color: C.textMuted }}
-              >
-                {item.label}
-              </span>
-              <span
-                className="text-[10px] font-bold uppercase"
-                style={{ color: item.color || C.text }}
-              >
-                {item.value}
-              </span>
-            </div>
-          ))}
-      </div>
-
-      {/* Prerequisites */}
-      {frontmatter.prerequisites && frontmatter.prerequisites.length > 0 && (
-        <div className="mt-4">
-          <div
-            className="text-[9px] font-bold uppercase tracking-wider mb-2"
-            style={{ color: C.textMuted }}
-          >
-            PREREQUISITES
-          </div>
-          {frontmatter.prerequisites.map((prereq) => (
-            <Link
-              key={prereq}
-              href={`/${entitySlug}/${prereq}`}
-              className="block text-[11px] uppercase py-1 hover:text-[#ff0000] transition-colors"
+              className={`text-[10px] uppercase tracking-[0.2em] mb-1.5 font-extrabold ${
+                index !== 0 ? "mt-8" : ""
+              }`}
               style={{ color: C.textMuted }}
             >
-              ▸ {prereq}
+              {cat}
+            </div>
+          )}
+          {items.map((a) => (
+            <Link
+              key={a.slug}
+              href={`/${entitySlug}/${a.slug}`}
+              className="block text-[12px] uppercase py-1 transition-colors hover:underline"
+              style={{
+                color: a.slug === currentSlug ? C.text : C.textMuted,
+                fontWeight: a.slug === currentSlug ? 600 : 400,
+              }}
+            >
+              {a.slug === currentSlug && <span className="mr-1">›</span>}
+              {a.title}
             </Link>
           ))}
         </div>
-      )}
+      ))}
+    </nav>
+  );
+}
 
-      {/* Author link */}
-      {frontmatter.author && (
-        <div className="mt-4">
-          <Link
-            href={`/${frontmatter.author}`}
-            className="block border-2 px-3 py-2 text-center text-[10px] font-bold uppercase tracking-wider transition-colors hover:bg-black hover:text-white"
-            style={{ borderColor: C.border }}
+/* ── Prev / Next Navigation ── */
+function ArticleNavigation({
+  prev,
+  next,
+  entitySlug,
+  t,
+}: {
+  prev?: { slug: string; title: string } | null;
+  next?: { slug: string; title: string } | null;
+  entitySlug: string;
+  t: (key: string) => string;
+}) {
+  if (!prev && !next) return null;
+
+  return (
+    <div
+      className="mt-12 pt-6 grid grid-cols-2 gap-4"
+      style={{ borderTop: `1px solid ${C.borderLight}` }}
+    >
+      {prev ? (
+        <Link
+          href={`/${entitySlug}/${prev.slug}`}
+          className="border p-4 group transition-colors"
+          style={{ borderColor: C.borderLight }}
+        >
+          <div
+            className="text-[10px] uppercase tracking-wider mb-1"
+            style={{ color: C.textMuted }}
           >
-            VIEW AUTHOR PROFILE →
-          </Link>
-        </div>
+            {t("previous")}
+          </div>
+          <div className="text-sm font-bold uppercase group-hover:underline">
+            {prev.title}
+          </div>
+        </Link>
+      ) : (
+        <div />
+      )}
+      {next ? (
+        <Link
+          href={`/${entitySlug}/${next.slug}`}
+          className="border p-4 group transition-colors text-right"
+          style={{ borderColor: C.borderLight }}
+        >
+          <div
+            className="text-[10px] uppercase tracking-wider mb-1"
+            style={{ color: C.textMuted }}
+          >
+            {t("next")}
+          </div>
+          <div className="text-sm font-bold uppercase group-hover:underline">
+            {next.title}
+          </div>
+        </Link>
+      ) : (
+        <div />
       )}
     </div>
   );
@@ -168,26 +163,60 @@ interface ArticlePageProps {
   frontmatter: ArticleFrontmatterType;
   toc: TocEntry[];
   entitySlug: string;
+  articleSlug: string;
   entityType: "subject" | "teacher";
   parentName: string;
   locale: string;
   isFallback?: boolean;
   fallbackLocale?: string;
   children: React.ReactNode; // MDX rendered content
+  // Navigation data
+  siblingArticles?: Array<{ slug: string; title: string; category?: string }>;
+  prevArticle?: { slug: string; title: string } | null;
+  nextArticle?: { slug: string; title: string } | null;
 }
 
 export function ArticlePage({
   frontmatter,
   toc,
   entitySlug,
+  articleSlug,
   entityType,
   parentName,
   locale,
   isFallback,
   fallbackLocale,
   children,
+  siblingArticles = [],
+  prevArticle,
+  nextArticle,
 }: ArticlePageProps) {
   const [activeId, setActiveId] = useState(toc[0]?.id || "");
+  const articleRef = useRef<HTMLElement>(null);
+  const t = useTranslations("common");
+  const tEntity = useTranslations("entity");
+
+  const title = loc(frontmatter.title, locale);
+
+  /* Hide duplicate first heading if it matches the article title */
+  useEffect(() => {
+    const el = articleRef.current;
+    if (!el) return;
+    const firstHeading = el.querySelector("h1, h2");
+    if (!firstHeading) return;
+    const headingText = (firstHeading.textContent || "").trim().toLowerCase();
+    const titleText = title.trim().toLowerCase();
+    if (headingText === titleText) {
+      (firstHeading as HTMLElement).style.display = "none";
+      // Also hide the border-top of the heading if present
+      const next = firstHeading.nextElementSibling;
+      if (next && next.tagName.match(/^H[1-6]$/)) {
+        (next as HTMLElement).style.marginTop = "0";
+        (next as HTMLElement).style.paddingTop = "0";
+        (next as HTMLElement).style.borderTop = "none";
+      }
+    }
+  }, [title]);
 
   /* Scroll spy for ToC */
   useEffect(() => {
@@ -210,57 +239,39 @@ export function ArticlePage({
     return () => observer.disconnect();
   }, [toc]);
 
-  const title = loc(frontmatter.title, locale);
-
-  const diffColor =
-    frontmatter.difficulty === "advanced"
-      ? C.red
-      : frontmatter.difficulty === "intermediate"
-      ? "#cc8800"
-      : "#008800";
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Fallback banner */}
-      {isFallback && (
-        <div
-          className="border-2 border-[#cc8800] bg-[#cc880008] px-4 py-3 mb-6"
-        >
-          <p className="text-[11px] uppercase tracking-wider" style={{ color: "#cc8800" }}>
-            This article is not available in your language. Showing{" "}
-            {fallbackLocale?.toUpperCase()} version.
+      {isFallback && fallbackLocale && (
+        <div className="border border-amber-300 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 mb-6">
+          <p
+            className="text-[12px] uppercase tracking-wider"
+            style={{ color: "#b45309" }}
+          >
+            {t("articleNotAvailable", { locale: fallbackLocale.toUpperCase() })}
           </p>
         </div>
       )}
 
       {/* ── Article header ── */}
       <motion.div
-        className="mb-8 pb-6"
-        style={{ borderBottom: `2px solid ${C.border}` }}
+        className="mb-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <span
-            className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider"
+            className="text-[11px] font-bold px-2 py-0.5 uppercase tracking-wider"
             style={{ backgroundColor: C.headerBg, color: C.headerText }}
           >
-            {entityType === "subject" ? "SUBJECT_ARTICLE" : "TEACHER_ARTICLE"}
+            {entityType === "subject" ? tEntity("subjectArticle") : tEntity("teacherArticle")}
           </span>
-          {frontmatter.difficulty && (
-            <span
-              className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider border"
-              style={{ borderColor: diffColor, color: diffColor }}
-            >
-              {frontmatter.difficulty.toUpperCase()}
-            </span>
-          )}
           {frontmatter.estimatedReadTime && (
             <span
-              className="text-[10px] px-2 py-0.5 uppercase tracking-wider border"
+              className="text-[11px] px-2 py-0.5 uppercase tracking-wider border"
               style={{ borderColor: C.borderLight, color: C.textMuted }}
             >
-              {frontmatter.estimatedReadTime} MIN READ
+              {t("readTime", { minutes: frontmatter.estimatedReadTime })}
             </span>
           )}
         </div>
@@ -268,54 +279,36 @@ export function ArticlePage({
         <h1 className="text-3xl md:text-5xl font-bold leading-tight tracking-tighter uppercase">
           {title}
         </h1>
-
-        <div
-          className="flex items-center gap-4 mt-4 text-[10px] uppercase tracking-wider"
-          style={{ color: C.textMuted }}
-        >
-          {frontmatter.author && (
-            <>
-              <span>
-                BY{" "}
-                <Link
-                  href={`/${frontmatter.author}`}
-                  className="font-bold hover:text-[#ff0000] transition-colors"
-                  style={{ color: C.text }}
-                >
-                  {frontmatter.author}
-                </Link>
-              </span>
-              <span>|</span>
-            </>
-          )}
-          {frontmatter.updated && <span>UPDATED {frontmatter.updated}</span>}
-        </div>
       </motion.div>
 
-      {/* ── Three-column layout ── */}
+      {/* ── Two-column layout with sidebar ── */}
       <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr_200px] gap-8">
-        {/* Left: Table of Contents */}
+        {/* Left: Article list in subject */}
         <aside className="hidden lg:block">
           <div className="sticky top-20">
-            <TableOfContents toc={toc} activeId={activeId} />
+            <ArticleSidebar
+              articles={siblingArticles}
+              currentSlug={articleSlug}
+              entitySlug={entitySlug}
+            />
           </div>
         </aside>
 
         {/* Mobile ToC */}
-        <div className="lg:hidden mb-6">
-          <details className="border-2" style={{ borderColor: C.border }}>
+        <div className="lg:hidden mb-6 col-span-full">
+          <details className="border" style={{ borderColor: C.borderLight }}>
             <summary
-              className="px-4 py-2 cursor-pointer text-[10px] font-bold uppercase tracking-wider"
+              className="px-4 py-2 cursor-pointer text-[11px] font-bold uppercase tracking-wider"
               style={{ backgroundColor: C.headerBg, color: C.headerText }}
             >
-              TABLE_OF_CONTENTS [{toc.length}]
+              {t("tableOfContentsCount", { count: toc.length })}
             </summary>
             <div className="px-4 py-2">
               {toc.map((entry) => (
                 <a
                   key={entry.id}
                   href={`#${entry.id}`}
-                  className="block text-[11px] uppercase py-1 hover:text-[#ff0000]"
+                  className="block text-[12px] uppercase py-1 hover:underline"
                   style={{
                     paddingLeft: entry.depth >= 3 ? "12px" : "0",
                     color: C.textMuted,
@@ -329,46 +322,37 @@ export function ArticlePage({
         </div>
 
         {/* Center: Article Content (MDX) */}
-        <article className="min-w-0 prose-wiki">{children}</article>
+        <article ref={articleRef} className="min-w-0 prose-wiki">
+          {children}
+        </article>
 
-        {/* Right: Meta Sidebar */}
+        {/* Right: Table of Contents */}
         <aside className="hidden lg:block">
           <div className="sticky top-20">
-            <MetaSidebar
-              frontmatter={frontmatter}
-              entitySlug={entitySlug}
-              locale={locale}
-            />
+            <TableOfContents toc={toc} activeId={activeId} />
           </div>
         </aside>
-
-        {/* Mobile meta */}
-        <div className="lg:hidden">
-          <MetaSidebar
-            frontmatter={frontmatter}
-            entitySlug={entitySlug}
-            locale={locale}
-          />
-        </div>
       </div>
+
+      {/* Prev / Next Navigation */}
+      <ArticleNavigation
+        prev={prevArticle}
+        next={nextArticle}
+        entitySlug={entitySlug}
+        t={t}
+      />
 
       {/* End marker */}
       <div
-        className="mt-12 pt-6 text-center"
-        style={{ borderTop: `2px solid ${C.border}` }}
+        className="mt-8 pt-6 text-center"
+        style={{ borderTop: `1px solid ${C.borderLight}` }}
       >
-        <p
-          className="text-[10px] uppercase tracking-wider"
-          style={{ color: C.textMuted }}
-        >
-          — END_OF_ARTICLE —
-        </p>
         <Link
           href={`/${entitySlug}`}
-          className="inline-block mt-4 border-2 px-4 py-2 text-[10px] font-bold uppercase tracking-wider transition-colors hover:bg-black hover:text-white"
-          style={{ borderColor: C.border }}
+          className="inline-block border px-4 py-2 text-[11px] font-bold uppercase tracking-wider transition-colors hover:underline"
+          style={{ borderColor: C.borderLight }}
         >
-          ← BACK TO {parentName.toUpperCase()}
+          ← {t("backTo", { name: parentName })}
         </Link>
       </div>
     </div>

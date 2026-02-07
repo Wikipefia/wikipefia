@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Fragment } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { C } from "@/lib/theme";
 import { SearchDialog } from "@/components/search/search-dialog";
 import { LocaleSwitcher } from "@/components/navigation/locale-switcher";
@@ -25,15 +26,15 @@ interface PageShellProps {
 function ThemeToggle() {
   const { resolvedTheme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations("common");
 
   useEffect(() => setMounted(true), []);
 
-  // Avoid hydration mismatch - render nothing until mounted
   if (!mounted) {
     return (
       <div
-        className="w-8 h-8 border-2 flex items-center justify-center"
-        style={{ borderColor: C.border }}
+        className="h-[34px] w-[34px] border flex items-center justify-center"
+        style={{ borderColor: C.borderLight }}
       />
     );
   }
@@ -41,12 +42,12 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="w-8 h-8 border-2 flex items-center justify-center cursor-pointer transition-colors hover:bg-black hover:text-white"
-      style={{ borderColor: C.border }}
-      title={resolvedTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-      aria-label={resolvedTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      className="h-[34px] w-[34px] border flex items-center justify-center cursor-pointer transition-colors"
+      style={{ borderColor: C.borderLight, color: C.textMuted }}
+      title={resolvedTheme === "dark" ? t("switchToLight") : t("switchToDark")}
+      aria-label={resolvedTheme === "dark" ? t("switchToLight") : t("switchToDark")}
     >
-      <span className="text-xs font-bold theme-toggle-icon" key={resolvedTheme}>
+      <span className="text-sm theme-toggle-icon" key={resolvedTheme}>
         {resolvedTheme === "dark" ? "☀" : "●"}
       </span>
     </button>
@@ -57,6 +58,7 @@ function ThemeToggle() {
 
 export function PageShell({ children, breadcrumbs, locale }: PageShellProps) {
   const [searchOpen, setSearchOpen] = useState(false);
+  const t = useTranslations("common");
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -80,27 +82,29 @@ export function PageShell({ children, breadcrumbs, locale }: PageShellProps) {
     >
       {/* ── HEADER ── */}
       <header
-        className="border-b-2 sticky top-0 z-40"
-        style={{ borderColor: C.border, backgroundColor: C.bg }}
+        className="border-b sticky top-0 z-40"
+        style={{ borderColor: C.borderLight, backgroundColor: C.bg }}
       >
         <div className="max-w-7xl mx-auto px-4">
-          <div className="h-12 flex items-center justify-between">
+          <div className="h-14 flex items-center justify-between">
             <Link
               href="/"
-              className="text-sm font-bold tracking-wider uppercase"
+              className="text-base font-bold tracking-wider uppercase"
             >
               WIKIPEFIA
             </Link>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setSearchOpen(true)}
-                className="flex items-center gap-2 px-3 py-1 border-2 cursor-pointer transition-colors hover:bg-black hover:text-white"
-                style={{ borderColor: C.border }}
+                className="flex items-center gap-2 px-4 py-1.5 border cursor-pointer transition-colors group"
+                style={{ borderColor: C.borderLight }}
               >
-                <span className="text-xs uppercase font-bold">Search</span>
+                <span className="text-xs uppercase font-medium group-hover:underline" style={{ color: C.textMuted }}>
+                  {t("search")}
+                </span>
                 <span
-                  className="text-[10px] border px-1"
-                  style={{ borderColor: C.borderLight }}
+                  className="text-[10px] border px-1 py-px"
+                  style={{ borderColor: C.borderLight, color: C.textMuted }}
                 >
                   ⌘K
                 </span>
@@ -118,14 +122,14 @@ export function PageShell({ children, breadcrumbs, locale }: PageShellProps) {
           className="border-b"
           style={{ borderColor: C.borderLight, backgroundColor: C.bg }}
         >
-          <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-2 text-[10px] uppercase tracking-wider">
+          <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-2 text-[11px] uppercase tracking-wider">
             {breadcrumbs.map((item, i) => (
               <Fragment key={i}>
                 {i > 0 && <span className="opacity-30">/</span>}
                 {item.href ? (
                   <Link
                     href={item.href}
-                    className="hover:text-[#ff0000] transition-colors"
+                    className="transition-colors hover:underline"
                     style={{ color: C.textMuted }}
                   >
                     {item.label}
@@ -143,23 +147,23 @@ export function PageShell({ children, breadcrumbs, locale }: PageShellProps) {
       <main className="flex-1">{children}</main>
 
       {/* ── FOOTER ── */}
-      <footer className="border-t-2 mt-auto" style={{ borderColor: C.border }}>
+      <footer className="border-t mt-auto" style={{ borderColor: C.borderLight }}>
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex items-center justify-between text-[10px] uppercase tracking-wider">
+          <div className="flex items-center justify-between text-[11px] uppercase tracking-wider">
             <div>
-              <span className="font-bold">WIKIPEFIA V0.2.0</span>
-              <span className="mx-3 opacity-20">|</span>
-              <span style={{ color: C.textMuted }}>EDUCATIONAL_DATABASE</span>
+              <span className="font-bold">WIKIPEFIA</span>
+              <span className="mx-3 opacity-20">·</span>
+              <span style={{ color: C.textMuted }}>{t("educationalDatabase")}</span>
             </div>
             <div className="flex items-center gap-4">
               <Link
                 href="/explore"
-                className="hover:text-[#ff0000] transition-colors"
+                className="hover:underline transition-colors"
                 style={{ color: C.textMuted }}
               >
-                EXPLORE
+                {t("exploreLabel").toUpperCase()}
               </Link>
-              <span style={{ color: C.textMuted }}>© 2026</span>
+              <span style={{ color: C.textMuted }}>{t("copyright")}</span>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Children, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { C } from "@/lib/theme";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,6 +29,7 @@ interface StepByStepProps {
 }
 
 export function StepByStep({ title, children }: StepByStepProps) {
+  const t = useTranslations("common");
   const steps: { title: string; content: ReactNode }[] = [];
 
   Children.forEach(children, (child) => {
@@ -54,7 +56,7 @@ export function StepByStep({ title, children }: StepByStepProps) {
           className="text-[10px] font-bold uppercase tracking-[0.15em]"
           style={{ fontFamily: "var(--font-mono)", color: C.headerText }}
         >
-          ■ {title || "Step by Step"}
+          ■ {title || t("stepByStep")}
         </span>
         <span
           className="text-[10px] font-bold tracking-[0.1em]"
@@ -123,12 +125,12 @@ export function StepByStep({ title, children }: StepByStepProps) {
                     <span
                       className="text-[8px] px-1.5 py-0.5 uppercase tracking-[0.1em]"
                       style={{
-                        backgroundColor: C.red,
+                        backgroundColor: C.accent,
                         color: "#fff",
                         fontFamily: "var(--font-mono)",
                       }}
                     >
-                      Current
+                      {t("current")}
                     </span>
                   )}
                 </p>
@@ -164,7 +166,7 @@ export function StepByStep({ title, children }: StepByStepProps) {
             color: C.text,
           }}
         >
-          ◄ Back
+          {t("back")}
         </button>
 
         {/* Progress dots */}
@@ -193,7 +195,7 @@ export function StepByStep({ title, children }: StepByStepProps) {
               color: C.headerText,
             }}
           >
-            Next ►
+            {t("nextStep")}
           </button>
         ) : (
           <button
@@ -205,7 +207,7 @@ export function StepByStep({ title, children }: StepByStepProps) {
               color: C.text,
             }}
           >
-            Reset
+            {t("resetStep")}
           </button>
         )}
       </div>
