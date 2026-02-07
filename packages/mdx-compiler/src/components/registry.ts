@@ -120,13 +120,14 @@ export const componentRegistry: Record<string, ComponentContract> = {
       yLabel: { type: "string" },
       width: { type: "number" },
       height: { type: "number" },
-      // xDomain and yDomain are array expressions — validated at runtime
+      xDomain: {}, // array expression — validated at runtime
+      yDomain: {}, // array expression — validated at runtime
     },
     childrenRequired: true,
   },
   Plot: {
     props: {
-      // fn is a JS function expression — cannot be statically validated
+      fn: {}, // JS function expression — cannot be statically validated
       color: { type: "string" },
       label: { type: "string" },
       dashed: { type: "boolean" },
@@ -156,7 +157,7 @@ export const componentRegistry: Record<string, ComponentContract> = {
   Value: {
     props: {
       label: { required: true, type: "string" },
-      // fn is a JS function expression — cannot be statically validated
+      fn: {}, // JS function expression — cannot be statically validated
     },
     parent: "Interactive",
   },
@@ -189,7 +190,8 @@ export const componentRegistry: Record<string, ComponentContract> = {
   DataTable: {
     props: {
       caption: { type: "string" },
-      // columns and rows are array expressions — validated at runtime
+      columns: {}, // array expression — validated at runtime
+      rows: {},    // array expression — validated at runtime
       sortable: { type: "boolean" },
     },
   },
