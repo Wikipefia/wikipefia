@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Serif } from "next/font/google";
+import { IBM_Plex_Serif, Noto_Sans } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { SearchProvider } from "@/components/search/search-provider";
@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/shared/theme-provider";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 
-const plexMono = IBM_Plex_Mono({
+const notoSans = Noto_Sans({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin", "cyrillic"],
   variable: "--font-mono",
@@ -61,7 +61,7 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body
-        className={`${plexMono.variable} ${plexSerif.variable} antialiased`}
+        className={`${notoSans.variable} ${plexSerif.variable} antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>

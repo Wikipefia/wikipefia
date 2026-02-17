@@ -145,7 +145,7 @@ export const mdxComponents: MDXComponents = {
   p: ({ children, ...props }) => (
     <p
       className="text-[16px] leading-[1.85] mb-5"
-      style={{ color: C.text, fontFamily: "var(--font-serif)" }}
+      style={{ color: C.text, fontFamily: "var(--font-mono)" }}
       {...props}
     >
       {children}
@@ -231,7 +231,7 @@ export const mdxComponents: MDXComponents = {
       className="text-[15px] leading-[1.75] pl-3"
       style={{
         color: C.text,
-        fontFamily: "var(--font-serif)",
+        fontFamily: "var(--font-mono)",
         borderLeft: `2px solid ${C.borderLight}`,
       }}
       {...props}
@@ -248,7 +248,7 @@ export const mdxComponents: MDXComponents = {
         borderLeftColor: C.borderLight,
         backgroundColor: "rgba(0, 0, 0, 0.02)",
         color: C.textMuted,
-        fontFamily: "var(--font-serif)",
+        fontFamily: "var(--font-mono)",
       }}
       {...props}
     >
