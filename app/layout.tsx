@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { SearchProvider } from "@/components/search/search-provider";
 import { ThemeProvider } from "@/components/shared/theme-provider";
+import { WelcomeBanner } from "@/components/shared/welcome-banner";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 
@@ -67,6 +68,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <SearchProvider locale={locale} searchMeta={searchMeta}>
               {children}
+              <WelcomeBanner />
             </SearchProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
