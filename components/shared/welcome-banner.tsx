@@ -48,11 +48,12 @@ export function WelcomeBanner() {
 
           {/* Modal */}
           <motion.div
-            className="relative w-full max-w-xl border-2 overflow-hidden"
+            className="relative w-full max-w-xl border-2 flex flex-col"
             style={{
               borderColor: C.border,
               backgroundColor: C.bgWhite,
               fontFamily: "var(--font-mono)",
+              maxHeight: "calc(100dvh - 2rem)",
             }}
             initial={{ opacity: 0, y: -10, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -61,7 +62,7 @@ export function WelcomeBanner() {
           >
             {/* Header bar */}
             <div
-              className="px-5 py-3 border-b-2 flex items-center justify-between"
+              className="px-5 py-3 border-b-2 flex items-center justify-between shrink-0"
               style={{
                 backgroundColor: C.headerBg,
                 borderColor: C.border,
@@ -82,8 +83,8 @@ export function WelcomeBanner() {
               </span>
             </div>
 
-            {/* Content */}
-            <div className="px-5 py-6">
+            {/* Scrollable content */}
+            <div className="px-5 py-5 overflow-y-auto flex-1 min-h-0">
               {/* Title */}
               <h2
                 className="text-2xl md:text-3xl font-bold uppercase tracking-tighter leading-tight mb-5"
@@ -186,7 +187,7 @@ export function WelcomeBanner() {
               />
 
               {/* Telegram section */}
-              <div className="mb-5">
+              <div>
                 <p
                   className="text-[11px] font-bold uppercase tracking-wider mb-3"
                   style={{ color: C.textMuted }}
@@ -248,8 +249,13 @@ export function WelcomeBanner() {
                   </a>
                 </div>
               </div>
+            </div>
 
-              {/* Accept button */}
+            {/* Fixed bottom: Accept button */}
+            <div
+              className="px-5 py-4 border-t shrink-0"
+              style={{ borderColor: C.borderLight }}
+            >
               <button
                 onClick={handleAccept}
                 className="w-full py-3 border-2 cursor-pointer transition-colors"
